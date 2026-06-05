@@ -64,5 +64,3 @@ class UserView(APIView):
             return Response({
                 'new data': update,
             }, status=status.HTTP_200_OK)
-
-        # Tratar possivel erro
