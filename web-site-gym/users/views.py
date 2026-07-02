@@ -58,7 +58,6 @@ class UserView(APIView):
         serializer = UpdateUserSerializer(data=request.data)
 
         if serializer.is_valid():
-            print(type(serializer.validated_data))
             update = update_user(user_id, **serializer.validated_data)
 
             return Response({

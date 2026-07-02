@@ -26,7 +26,6 @@ def creates_user(username: str, email: str, phone_number: str, password: str) ->
 
 
 def update_user(user_id: str, username: str, email: str, phone_number: str) -> User:
-    print(user_id, username, email, phone_number)
     data = User.objects.filter(username=username, email=email, phone_number=phone_number)
     if data:
         raise ValidationError('Someone this fields already are using: Username, email or phone number')
