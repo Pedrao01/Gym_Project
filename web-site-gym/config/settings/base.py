@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'pytest',
     'users',
     'plans'
 ]
@@ -148,10 +150,19 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated'
-    ]
-
+    ],
 }
 
 # In development, use the wildcard. In production, replace it with the frontend domain:
 CORS_ALLOW_ALL_ORIGINS = True  # Only dev
 # CORS_ALLOWED_ORIGINS = ["https://seu-frontend.vercel.app"]  # Production
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+
+CELERY_BEAT_SCHEDULE = {
+    'check-expired-plans': {
+        'task': 'plans.tasks.check_expired_plans',
+        'schedule': crontab(minute='*/1'),
+    }
+}
