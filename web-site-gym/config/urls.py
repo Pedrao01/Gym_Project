@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from users.views import UserView, CreateUserViews
-from plans.views import PlanView
+from plans.views import PlanView, PaymentConfirmView, PlanStatusView, PlanCancelView
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
@@ -26,5 +26,8 @@ urlpatterns = [
     path('gym/user/', UserView.as_view()),
     path('gym/login/', TokenObtainPairView.as_view()),
     path('gym/refresh/', TokenRefreshView.as_view()),
-    path('gym/plans-payment/', PlanView.as_view())
+    path('gym/plan-payment/', PlanView.as_view()),
+    path('gym/payments/confirm/', PaymentConfirmView.as_view()),
+    path('gym/payments/status/', PlanStatusView.as_view()),
+    path('gym/plan/cancel/', PlanCancelView.as_view())
 ]
