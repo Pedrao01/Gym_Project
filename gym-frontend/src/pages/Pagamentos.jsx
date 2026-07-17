@@ -158,7 +158,7 @@ export default function Pagamentos() {
       <div className="bg-white border border-gray-100 rounded-2xl p-5 max-w-lg">
         <p className="text-xs font-medium text-gray-400 uppercase tracking-widest mb-4">Assinar novo plano</p>
 
-        <div className="grid grid-cols-3 gap-3 mb-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-5">
           {PLANS.map((plan) => (
             <div
               key={plan.id}
