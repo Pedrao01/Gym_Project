@@ -9,14 +9,14 @@ const fetchWithRefresh = async (url, options) => {
   let r = await fetch(url, options);
 
   if (r.status === 401) {
-    const refreshed = await refreshToken();  // usa fetch direto internamente
+    const refreshed = await refreshToken();
     if (refreshed) {
       options.headers['Authorization'] = `Bearer ${localStorage.getItem('access')}`;
-      r = await fetch(url, options);  // ← fetch direto também, não fetchWithRefresh
+      r = await fetch(url, options);
     } else {
       logout();
-      window.location.reload();  // redireciona pro login
-      return r;  // ← importante: para a execução aqui
+      window.location.reload();
+      return r;
     }
   }
 
@@ -69,10 +69,10 @@ export const createPayment = async (plan) => {
 
 export const getPaymentStatus = async () => {
   const r = await fetchWithRefresh(`${API_BASE}/gym/payments/status/`, {
-    method: 'get',
+    method: 'GET',
     headers: authHeaders(),
   });
-  return { ok: r.ok, data: await r.json()};
+  return { ok: r.ok, data: await r.json() };
 };
 
 export const confirmPayment = async (status, planId, paymentId) => {
@@ -91,6 +91,37 @@ export const cancelPlan = async () => {
   });
   return { ok: r.ok, data: await r.json() };
 };
+
+// ── Admin ──────────────────────────────────────────────
+
+export const getAdminStats = async () => {
+  const r = await fetchWithRefresh(`${API_BASE}/gym/admin/stats/`, {
+    method: 'GET',
+    headers: authHeaders(),
+  });
+  return { ok: r.ok, data: await r.json() };
+};
+
+export const listUsers = async (page = 1, search = '') => {
+  const params = new URLSearchParams({ page });
+  if (search) params.set('search', search);
+  const r = await fetchWithRefresh(`${API_BASE}/gym/admin/users/?${params}`, {
+    method: 'GET',
+    headers: authHeaders(),
+  });
+  return { ok: r.ok, data: await r.json() };
+};
+
+export const toggleUserActive = async (userId, isActive) => {
+  const r = await fetchWithRefresh(`${API_BASE}/gym/admin/users/${userId}/`, {
+    method: 'PATCH',
+    headers: authHeaders(),
+    body: JSON.stringify({ is_active: isActive }),
+  });
+  return { ok: r.ok, data: await r.json() };
+};
+
+// ── Auth ───────────────────────────────────────────────
 
 export const refreshToken = async () => {
   const r = await fetch(`${API_BASE}/gym/refresh/`, {

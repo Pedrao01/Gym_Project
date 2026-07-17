@@ -2,17 +2,26 @@ import { useState } from 'react';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './Dashboard';
+import AdminDashboard from './AdminDashboard';
 
 const params = new URLSearchParams(window.location.search);
 const paymentStatus = params.get('status');
 
 export default function App() {
   const [tab, setTab] = useState('login');
-
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('access'));
+  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem('isAdmin'));
+
+  const handleLogin = (admin = false) => {
+    if (admin) localStorage.setItem('is_admin', 'true');
+    setIsAdmin(admin);
+    setIsLoggedIn(true);
+  };
 
   if (isLoggedIn) {
-    return <Dashboard paymentStatus={paymentStatus} />;;
+    return isAdmin
+      ? <AdminDashboard />
+      : <Dashboard paymentStatus={paymentStatus} />;
   }
 
   return (
@@ -44,7 +53,7 @@ export default function App() {
 
         <div className="p-8">
           {tab === 'login'
-            ? <Login onSwitchToRegister={() => setTab('register')} onLogin={(() => setIsLoggedIn(true))} />
+            ? <Login onSwitchToRegister={() => setTab('register')} onLogin={handleLogin} />
             : <Register onSwitchToLogin={() => setTab('login')} />
           }
         </div>

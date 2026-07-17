@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { loginUser } from '../services/api';
+import { jwtDecode } from 'jwt-decode';
 
 export default function Login({ onSwitchToRegister, onLogin }) {
   const [username, setUsername] = useState('');
@@ -19,8 +20,17 @@ export default function Login({ onSwitchToRegister, onLogin }) {
       if (ok) {
         localStorage.setItem('access', data.access);
         localStorage.setItem('refresh', data.refresh);
+
+        const decodedToken = jwtDecode(data.access);
+
+        // is_staff vem no token decodificado — o Django pode incluir no payload
+        // Por ora, detectamos pelo campo is_staff que o DRF pode retornar
+        const isAdmin = decodedToken.is_staff === true;
+
+        console.log('isAdmin:', data.is_staff)
+
         setMsg({ type: 'success', text: 'Login realizado com sucesso!' });
-        setTimeout(() => onLogin(), 800);
+        setTimeout(() => onLogin(isAdmin), 800);
       } else {
         setMsg({ type: 'error', text: data.detail || 'Credenciais inválidas.' });
       }
@@ -37,15 +47,9 @@ export default function Login({ onSwitchToRegister, onLogin }) {
         <p className="text-sm text-gray-500 mt-1">Entre na sua conta</p>
       </div>
 
-      <p className="text-xs text-gray-400 bg-gray-50 border-l-4 border-orange-500 px-3 py-2 rounded-r mb-4">
-        Endpoint: <code className="text-orange-500">POST /gym/login/</code>
-      </p>
-
       {msg && (
-        <div className={`text-sm px-3 py-2 rounded mb-4 ${
-          msg.type === 'error'
-            ? 'bg-red-50 text-red-600'
-            : 'bg-green-50 text-green-600'
+        <div className={`text-sm px-3 py-2 rounded-lg mb-4 ${
+          msg.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'
         }`}>
           {msg.text}
         </div>
@@ -57,6 +61,7 @@ export default function Login({ onSwitchToRegister, onLogin }) {
           type="text"
           value={username}
           onChange={e => setUsername(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleLogin()}
           placeholder="seu_usuario"
           className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
         />
@@ -68,6 +73,7 @@ export default function Login({ onSwitchToRegister, onLogin }) {
           type="password"
           value={password}
           onChange={e => setPassword(e.target.value)}
+          onKeyDown={e => e.key === 'Enter' && handleLogin()}
           placeholder="••••••••"
           className="w-full px-4 py-2.5 text-sm border border-gray-200 rounded-lg outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-100"
         />
@@ -76,7 +82,7 @@ export default function Login({ onSwitchToRegister, onLogin }) {
       <button
         onClick={handleLogin}
         disabled={loading}
-        className="w-full py-3 font-bebas text-xl tracking-widest text-white bg-orange-600 rounded-lg hover:bg-orange-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors mt-1"
+        className="w-full py-3 font-bebas text-xl tracking-widest text-white bg-orange-600 rounded-lg hover:bg-orange-700 disabled:opacity-50 transition-colors mt-1"
       >
         {loading ? 'AGUARDE...' : 'ENTRAR'}
       </button>

@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from rest_framework.views import APIView, Response, status
-from .serializers import UserSerializer, UpdateUserSerializer
+from .serializers import UserSerializer, UpdateUserSerializer, MyTokenSerializer
 from .services import creates_user, get_by_username, update_user
 from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.views import  TokenObtainPairView
 
 # Create your views here.
 
@@ -63,3 +64,7 @@ class UserView(APIView):
             return Response({
                 'new data': update,
             }, status=status.HTTP_200_OK)
+
+
+class MyTokenObtainPairView(TokenObtainPairView):
+    serializer_class = MyTokenSerializer

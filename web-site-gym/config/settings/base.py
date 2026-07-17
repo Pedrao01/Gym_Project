@@ -136,6 +136,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
 
+SIMPLE_JWT = {
+    'TOKEN_OBTAIN_SERIALIZER': 'users.serializers.MyTokenSerializer'
+}
+
 REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_CLASSES': [
         'rest_framework.throttling.AnonRateThrottle',
@@ -163,6 +167,6 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
 CELERY_BEAT_SCHEDULE = {
     'check-expired-plans': {
         'task': 'plans.tasks.check_expired_plans',
-        'schedule': crontab(minute='*/1'),
+        'schedule': crontab(minute='0', hour='0'),
     }
 }
