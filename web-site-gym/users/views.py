@@ -2,9 +2,16 @@ from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from rest_framework.views import APIView, Response, status
 from .serializers import UserSerializer, UpdateUserSerializer, MyTokenSerializer
-from .services import creates_user, get_by_username, update_user
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.views import  TokenObtainPairView
+from .services import creates_user, get_by_username, update_user, update_user_plan
+from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework import generics
+from rest_framework.filters import SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.pagination import PageNumberPagination
+
+from .models import User
+from plans.models import Plan
 
 # Create your views here.
 
@@ -66,5 +73,46 @@ class UserView(APIView):
             }, status=status.HTTP_200_OK)
 
 
+#  Rota: gym/login/
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenSerializer
+
+
+class StatsView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        plans = Plan.objects.all()
+        total = len(plans)
+        with_plan = len(plans.filter(is_active=True))
+        without_plan = len(plans.filter(is_active=False))
+
+        return Response({
+            'total': total,
+            'with_plan': with_plan,
+            'without_plan': without_plan
+        }, status=status.HTTP_200_OK)
+
+
+class ListUsersView(generics.ListAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+    filter_backends = [DjangoFilterBackend, SearchFilter]
+    # filterset_fields = ['page', 'search']
+    search_fields = ['username', 'email', 'phone_number']
+
+    def get_queryset(self):
+        queryset = User.objects.filter(plan__isnull=False).prefetch_related('plan')
+
+        return queryset
+
+
+class UpdateUserView(generics.UpdateAPIView):
+    permission_classes = [IsAdminUser]
+
+    def patch(self, request, *args, **kwargs):
+        user = update_user_plan(kwargs['user_id'], request.data['is_active'])
+
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
