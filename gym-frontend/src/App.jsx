@@ -10,15 +10,22 @@ const paymentStatus = params.get('status');
 export default function App() {
   const [tab, setTab] = useState('login');
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('access'));
-  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem('isAdmin'));
+  const [isAdmin, setIsAdmin] = useState(!!localStorage.getItem('is_admin'));
 
   const handleLogin = (admin = false) => {
-    if (admin) localStorage.setItem('is_admin', 'true');
+    if (admin) {
+      localStorage.setItem('is_admin', 'true');
+    } else {
+      localStorage.removeItem('is_admin');
+    }
     setIsAdmin(admin);
     setIsLoggedIn(true);
   };
 
   if (isLoggedIn) {
+    if (paymentStatus) {
+      return <Dashboard paymentStatus={paymentStatus} />;
+    }
     return isAdmin
       ? <AdminDashboard />
       : <Dashboard paymentStatus={paymentStatus} />;
