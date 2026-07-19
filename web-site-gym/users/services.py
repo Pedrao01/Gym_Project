@@ -1,4 +1,5 @@
 from .models import User
+from plans.models import Plan
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError
 
@@ -44,3 +45,11 @@ def update_user(user_id: str, username: str, email: str, phone_number: str) -> U
 
     except TypeError as e:
         print(e)
+
+
+def update_user_plan(user_id, is_active):
+    Plan.objects.filter(user_id=user_id).update(is_active=is_active)
+
+    user = User.objects.prefetch_related('plan').get(id=user_id)
+
+    return user
