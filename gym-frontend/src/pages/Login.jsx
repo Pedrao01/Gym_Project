@@ -27,7 +27,6 @@ export default function Login({ onSwitchToRegister, onLogin }) {
         // Por ora, detectamos pelo campo is_staff que o DRF pode retornar
         const isAdmin = decodedToken.is_staff === true;
 
-        console.log('isAdmin:', data.is_staff)
 
         setMsg({ type: 'success', text: 'Login realizado com sucesso!' });
         setTimeout(() => onLogin(isAdmin), 800);
