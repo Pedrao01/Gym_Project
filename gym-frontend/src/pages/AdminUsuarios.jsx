@@ -51,12 +51,19 @@ export default function AdminUsuarios() {
   };
 
   const handleToggle = async (user) => {
-    const { ok } = await toggleUserActive(user.id, !user.is_active);
+    const newStatus = !user.plan.is_active;
+
+    const { ok } = await toggleUserActive(user.id, !user.plan.is_active);
     if (ok) {
       setUsers(prev =>
-        prev.map(u => u.id === user.id ? { ...u, is_active: !u.is_active } : u)
+        prev.map(u => u.id === user.id
+         ? { ...u, plan: { ...u.plan, is_active: newStatus } }
+         : u
+        )
       );
-      setMsg({ type: 'success', text: `Usuário ${user.username} ${!user.is_active ? 'ativado' : 'desativado'}.` });
+      fetchStats()
+
+      setMsg({ type: 'success', text: `Usuário ${user.username} ${!user.plan.is_active ? 'ativado' : 'desativado'}.` });
       setTimeout(() => setMsg(null), 2500);
     } else {
       setMsg({ type: 'error', text: 'Erro ao atualizar usuário.' });
@@ -153,7 +160,7 @@ export default function AdminUsuarios() {
                 <td className="px-4 py-3">
                   {user.plan ? (
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-blue-50 text-blue-700">
-                      {PLAN_LABEL[user.plan] || user.plan}
+                      {PLAN_LABEL[user.plan.kind_plan] || user.plan.kindplan}
                     </span>
                   ) : (
                     <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
@@ -163,23 +170,23 @@ export default function AdminUsuarios() {
                 </td>
                 <td className="px-4 py-3">
                   <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${
-                    user.is_active
+                    user.plan.is_active
                       ? 'bg-green-50 text-green-700'
                       : 'bg-red-50 text-red-600'
                   }`}>
-                    {user.is_active ? '● Ativo' : '● Inativo'}
+                    {user.plan.is_active ? '● Ativo' : '● Inativo'}
                   </span>
                 </td>
                 <td className="px-4 py-3">
                   <button
                     onClick={() => handleToggle(user)}
                     className={`text-xs px-3 py-1.5 rounded-lg border transition-colors ${
-                      user.is_active
+                      user.plan.is_active
                         ? 'text-red-600 bg-red-50 border-red-200 hover:bg-red-100'
                         : 'text-green-700 bg-green-50 border-green-200 hover:bg-green-100'
                     }`}
                   >
-                    {user.is_active ? 'Desativar' : 'Ativar'}
+                    {user.plan.is_active ? 'Desativar' : 'Ativar'}
                   </button>
                 </td>
               </tr>
