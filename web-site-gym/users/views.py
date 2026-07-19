@@ -98,7 +98,6 @@ class ListUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    # filterset_fields = ['page', 'search']
     search_fields = ['username', 'email', 'phone_number']
 
     def get_queryset(self):
