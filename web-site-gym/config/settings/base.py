@@ -25,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG')
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = []
 
@@ -162,7 +162,7 @@ REST_FRAMEWORK = {
 
 # In development, use the wildcard. In production, replace it with the frontend domain:
 CORS_ALLOW_ALL_ORIGINS = True  # Only dev
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='localhost', cast=Csv())
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default='http://localhost:8000', cast=Csv())
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
