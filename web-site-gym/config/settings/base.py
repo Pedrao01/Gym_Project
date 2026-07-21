@@ -162,7 +162,7 @@ REST_FRAMEWORK = {
 
 # In development, use the wildcard. In production, replace it with the frontend domain:
 CORS_ALLOW_ALL_ORIGINS = True  # Only dev
-CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv())
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', default=True, cast=Csv())
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
