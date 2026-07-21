@@ -101,7 +101,7 @@ class ListUsersView(generics.ListAPIView):
     search_fields = ['username', 'email', 'phone_number']
 
     def get_queryset(self):
-        queryset = User.objects.filter(plan__isnull=False).prefetch_related('plan')
+        queryset = User.objects.filter(plan__isnull=False).prefetch_related('plan').order_by('id')
 
         return queryset
 

@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
-from decouple import config
+from decouple import config, Csv
 from celery.schedules import crontab
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -162,7 +162,7 @@ REST_FRAMEWORK = {
 
 # In development, use the wildcard. In production, replace it with the frontend domain:
 CORS_ALLOW_ALL_ORIGINS = True  # Only dev
-# CORS_ALLOWED_ORIGINS = ["https://seu-frontend.vercel.app"]  # Production
+CORS_ALLOWED_ORIGINS = config('CORS_ALLOWED_ORIGINS', cast=Csv())
 
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
