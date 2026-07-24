@@ -75,11 +75,11 @@ export const getPaymentStatus = async () => {
   return { ok: r.ok, data: await r.json() };
 };
 
-export const confirmPayment = async (status, planId, paymentId) => {
+export const confirmPayment = async (planId, paymentId) => {
   const r = await fetchWithRefresh(`${API_BASE}/gym/payments/confirm/`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ status, plan_id: planId, payment_id: paymentId }),
+    body: JSON.stringify({ plan_id: planId, payment_id: paymentId }),
   });
   return { httpStatus: r.status, data: await r.json() };
 };
