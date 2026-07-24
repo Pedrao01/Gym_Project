@@ -36,6 +36,14 @@ def create_preference(plan_id: str, user: User):
     return payment
 
 
+def get_status_payment_mercadopago(payment_id: int) -> str:
+    sdk = get_sdk()
+
+    request = sdk.payment().get(payment_id=payment_id)
+
+    return request['response'].get('status')
+
+
 def update_plan(user: User, plan_kind: str, payment_id):
     with transaction.atomic():
         plan = Plan.objects.get(user=user)
