@@ -1,6 +1,6 @@
 from rest_framework.views import APIView, Response, status
 from django.core.exceptions import ObjectDoesNotExist
-from .services import create_preference, create_plan, cancel_plan, user_plan_is_active, update_plan
+from .services import create_preference, create_plan, cancel_plan, user_plan_is_active, update_plan, get_status_payment_mercadopago
 from django.db.utils import IntegrityError
 from .models import Plan
 
@@ -28,13 +28,14 @@ class PlanView(APIView):
 #  Rota: /gym/payments/confirm/
 class PaymentConfirmView(APIView):
     def post(self, request) -> Response:
-        user = request.user
-        plan_status = request.data.get('status')
-        plan_kind = request.data.get('plan_id')
         plan_payment_id = request.data.get('payment_id')
+        payment_status = get_status_payment_mercadopago(int(plan_payment_id))
 
-        if plan_status != 'approved':
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        if payment_status != 'approved':
+            return Response({'error': 'Pagamento inválido.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = request.user
+        plan_kind = request.data.get('plan_id')
 
         try:
             plan = Plan.objects.get(payment_id=plan_payment_id)
