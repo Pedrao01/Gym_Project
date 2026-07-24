@@ -49,7 +49,7 @@ class PaymentConfirmView(APIView):
             pass
 
         try:
-            plan = create_plan(user, plan_kind, plan_payment_id)
+            plan = create_plan(user, plan_kind, payment_id)
 
             return Response({
                 'plan_name': plan.kind_plan,
@@ -58,7 +58,7 @@ class PaymentConfirmView(APIView):
             }, status=status.HTTP_200_OK)
 
         except IntegrityError:
-            plan = update_plan(user, plan_kind, plan_payment_id)
+            plan = update_plan(user, plan_kind, payment_id)
 
             return Response({
                 'plan_name': plan.kind_plan,
