@@ -28,8 +28,8 @@ class PlanView(APIView):
 #  Rota: /gym/payments/confirm/
 class PaymentConfirmView(APIView):
     def post(self, request) -> Response:
-        plan_payment_id = request.data.get('payment_id')
-        payment_status = get_status_payment_mercadopago(int(plan_payment_id))
+        payment_id = request.data.get('payment_id')
+        payment_status = get_status_payment_mercadopago(int(payment_id))
 
         if payment_status != 'approved':
             return Response({'error': 'Pagamento inválido.'}, status=status.HTTP_400_BAD_REQUEST)
@@ -38,7 +38,7 @@ class PaymentConfirmView(APIView):
         plan_kind = request.data.get('plan_id')
 
         try:
-            plan = Plan.objects.get(payment_id=plan_payment_id)
+            plan = Plan.objects.get(payment_id=payment_id)
             return Response({
                 'plan_name': plan.kind_plan,
                 'expires_at': plan.expected_payment,
