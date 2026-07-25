@@ -20,7 +20,8 @@ def create_preference(plan_id: str, user: User):
             "quantity": 1,
             "currency_id": "BRL",
             "unit_price": plan['unit_price'],
-            "description": plan['description']
+            "description": plan['description'],
+            "category_id": plan_id
         }, ],
         "back_urls": {
             "success": "localhost:5173/?status=approved",
@@ -36,12 +37,12 @@ def create_preference(plan_id: str, user: User):
     return payment
 
 
-def get_status_payment_mercadopago(payment_id: int) -> str:
+def get_payment_mercadopago(payment_id: int) -> str:
     sdk = get_sdk()
 
     request = sdk.payment().get(payment_id=payment_id)
 
-    return request['response'].get('status')
+    return request['response']
 
 
 def update_plan(user: User, plan_kind: str, payment_id):
