@@ -24,7 +24,7 @@ const fetchWithRefresh = async (url, options) => {
 };
 
 export const loginUser = async (username, password) => {
-  const r = await fetchWithRefresh(`${API_BASE}/gym/login/`, {
+  const r = await fetch(`${API_BASE}/gym/login/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ username, password }),
@@ -75,11 +75,11 @@ export const getPaymentStatus = async () => {
   return { ok: r.ok, data: await r.json() };
 };
 
-export const confirmPayment = async (planId, paymentId) => {
+export const confirmPayment = async (paymentId) => {
   const r = await fetchWithRefresh(`${API_BASE}/gym/payments/confirm/`, {
     method: 'POST',
     headers: authHeaders(),
-    body: JSON.stringify({ plan_id: planId, payment_id: paymentId }),
+    body: JSON.stringify({ payment_id: paymentId }),
   });
   return { httpStatus: r.status, data: await r.json() };
 };
