@@ -33,10 +33,17 @@ class PaymentConfirmView(APIView):
             return Response({'error': 'PaymentId no provide'}, status=status.HTTP_400_BAD_REQUEST)
         payment = get_payment_mercadopago(int(payment_id))
 
+        user = request.user
+        payment_user_id = payment['additional_info']['items'][0]['id']
+        if payment_user_id != str(user.id):
+            return Response(
+                {'error': 'The payment ID is not the same as the user ID'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         if payment['status'] != 'approved':
             return Response({'error': 'Pagamento inválido.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = request.user
         plan_kind = payment['additional_info']['items'][0]['category_id']
 
         try:
