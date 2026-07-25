@@ -52,33 +52,29 @@ class PaymentConfirmView(APIView):
                 'plan_name': plan.kind_plan,
                 'expires_at': plan.expected_payment,
                 'is_active': plan.is_valid
-            })
+            }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
-            pass
+            try:
+                if Plan.objects.filter(user=user).exists():
+                    plan = update_plan(user, plan_kind, payment_id)
 
-        try:
-            plan = create_plan(user, plan_kind, payment_id)
+                    return Response({
+                        'plan_name': plan.kind_plan,
+                        'expires_at': plan.expected_payment,
+                        'is_active': plan.is_valid
+                    }, status=status.HTTP_200_OK)
 
-            return Response({
-                'plan_name': plan.kind_plan,
-                'expires_at': plan.expected_payment,
-                'status': plan.is_valid
-            }, status=status.HTTP_200_OK)
+                plan = create_plan(user, plan_kind, payment_id)
 
-        except IntegrityError:
-            plan = update_plan(user, plan_kind, payment_id)
+                return Response({
+                    'plan_name': plan.kind_plan,
+                    'expires_at': plan.expected_payment,
+                    'is_active': plan.is_valid
+                }, status=status.HTTP_200_OK)
 
-            return Response({
-                'plan_name': plan.kind_plan,
-                'expires_at': plan.expected_payment,
-                'is_active': plan.is_valid
-            }, status=status.HTTP_200_OK)
-
-        except Exception as e:
-            print(e.args)
-
-        return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            except Exception:
+                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 #  Route: /gym/payments/status/
