@@ -45,7 +45,7 @@ export default function Pagamentos() {
     localStorage.removeItem('selectedPlan')
     const paymentId = params.get('payment_id');
 
-    const { httpStatus, data } = await confirmPayment(plan.id, paymentId);
+    const { httpStatus, data } = await confirmPayment(paymentId);
 
     if (httpStatus === 200) {
       setMsg({ type: 'success', text: '✅ Pagamento aprovado! Seu plano já está ativo.' });
