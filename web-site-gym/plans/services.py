@@ -107,5 +107,7 @@ def user_plan_is_active(user: User):
         if plan.is_active:
             return True
 
+        return False
+
     except ObjectDoesNotExist:
         return False
