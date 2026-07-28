@@ -27,7 +27,7 @@ urlpatterns = [
     path('gym/login/', MyTokenObtainPairView.as_view()),
     path('gym/refresh/', TokenRefreshView.as_view()),
     path('gym/plan-payment/', PlanView.as_view()),
-    path('gym/payments/confirm/', PaymentConfirmView.as_view()),
+    path('gym/payments/confirm/', PaymentConfirmView.as_view(), name='payment-confirm'),
     path('gym/payments/status/', PlanStatusView.as_view()),
     path('gym/plan/cancel/', PlanCancelView.as_view()),
     path('gym/admin/stats/', StatsView.as_view()),
