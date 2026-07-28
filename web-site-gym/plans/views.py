@@ -104,6 +104,11 @@ class PlanCancelView(APIView):
         try:
             plan = cancel_plan(user)
 
+            if plan is None:
+                return Response({
+                    'error': 'Internal server error'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
             return Response({
                 'plan_name': plan.kind_plan,
                 'expires_at': plan.expected_payment,

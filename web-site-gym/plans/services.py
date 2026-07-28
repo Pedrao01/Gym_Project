@@ -92,7 +92,10 @@ def update_next_payment(plan: Plan, plan_months: int):
 def cancel_plan(user: User):
     plan = user.plan
     today_date = date.today()
-    if today_date < plan.expected_payment:
+    if plan.expected_payment is None:
+        return None
+
+    if today_date <= plan.expected_payment:
         with transaction.atomic():
             plan.is_active = False
             plan.save(update_fields=['is_active'])
