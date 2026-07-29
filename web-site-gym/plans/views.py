@@ -42,7 +42,7 @@ class PaymentConfirmView(APIView):
             )
 
         if payment['status'] != 'approved':
-            return Response({'error': 'Pagamento inválido.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Invalid payment'}, status=status.HTTP_400_BAD_REQUEST)
 
         plan_kind = payment['additional_info']['items'][0]['category_id']
 
