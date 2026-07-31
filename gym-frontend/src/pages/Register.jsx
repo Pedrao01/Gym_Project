@@ -45,10 +45,6 @@ export default function Register({ onSwitchToLogin }) {
         <p className="text-sm text-gray-500 mt-1">Crie sua conta</p>
       </div>
 
-      <p className="text-xs text-gray-400 bg-gray-50 border-l-4 border-orange-500 px-3 py-2 rounded-r mb-4">
-        Endpoint: <code className="text-orange-500">POST /gym/user/</code>
-      </p>
-
       {msg && (
         <div className={`text-sm px-3 py-2 rounded mb-4 ${
           msg.type === 'error' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'
