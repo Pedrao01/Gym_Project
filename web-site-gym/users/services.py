@@ -26,13 +26,9 @@ def creates_user(username: str, email: str, phone_number: str, password: str) ->
         raise ValidationError('Database internal error')
 
 
-def update_user(user_id: str, username: str, email: str, phone_number: str) -> User:
-    data = User.objects.filter(username=username, email=email, phone_number=phone_number)
-    if data:
-        raise ValidationError('Someone this fields already are using: Username, email or phone number')
-
+def update_user(user: User, username: str, email: str, phone_number: str) -> User:
     try:
-        user = User.objects.filter(id=user_id).update(
+        user = User.objects.filter(id=user.id).update(
             username=username,
             email=email,
             phone_number=phone_number
@@ -43,8 +39,8 @@ def update_user(user_id: str, username: str, email: str, phone_number: str) -> U
     except OperationalError:
         raise ValidationError('Database internal error')
 
-    except TypeError as e:
-        print(e)
+    except Exception:
+        raise Exception('Internal server error')
 
 
 def update_user_plan(user_id, is_active):
