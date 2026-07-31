@@ -61,7 +61,7 @@ class UserView(APIView):
         return Response(user_serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request) -> Response:
-        user_id = request.user.id
+        user_id = request.user
 
         serializer = UpdateUserSerializer(data=request.data)
 
@@ -71,6 +71,8 @@ class UserView(APIView):
             return Response({
                 'new data': update,
             }, status=status.HTTP_200_OK)
+
+        return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  Rota: gym/login/
