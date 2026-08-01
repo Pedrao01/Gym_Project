@@ -7,7 +7,7 @@ from users.models import User
 
 class Plan(models.Model):
     class KindPlan(models.TextChoices):
-        MONTHLY = 'mensal', 'Trimestal'
+        MONTHLY = 'mensal', 'Mensal'
         QUARTERLY = 'trimestal', 'Trimestral'
         ANNUAL = 'anual', 'Anual'
 
