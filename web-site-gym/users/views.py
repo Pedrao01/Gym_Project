@@ -38,7 +38,7 @@ class CreateUserViews(APIView):
             return Response({'errors': e.message}, status=status.HTTP_400_BAD_REQUEST)
 
         except Exception:
-            Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserView(APIView):
