@@ -21,18 +21,6 @@ class UpdateUserSerializer(serializers.ModelSerializer):
         model = User
         fields = ['username', 'email', 'phone_number']
 
-    def validate_your_fields_name(self, username, email, phone_number):
-        current_user = self.context['request'].user
-
-        exists = User.objects.filter(
-            username=username, email=email, phone_number=phone_number
-        ).exclude(pk=current_user.id).exists()
-
-        if exists:
-            raise serializers.ValidationError('This data already exists in the database.')
-
-        return username, email, phone_number
-
 
 class MyTokenSerializer(TokenObtainPairSerializer):
     @classmethod
