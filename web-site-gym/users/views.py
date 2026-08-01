@@ -37,8 +37,8 @@ class CreateUserViews(APIView):
         except ValidationError as e:
             return Response({'errors': e.message}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception as e:
-            print(e.args)
+        except Exception:
+            Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class UserView(APIView):
@@ -77,9 +77,8 @@ class StatsView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
-        users = User.objects.all()
         plans = Plan.objects.all()
-        total = len(users)
+        total = len(plans)
         with_plan = len(plans.filter(is_active=True))
         without_plan = len(plans.filter(is_active=False))
 
