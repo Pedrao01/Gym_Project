@@ -19,17 +19,6 @@ from plans.models import Plan
 class CreateUserViews(APIView):
     permission_classes = [AllowAny]
 
-    def get(self, request):
-        try:
-            username = request.user
-            users = get_by_username(username=username)
-            serializer = UserSerializer(users)
-
-            return Response(serializer.data, status=status.HTTP_200_OK)
-
-        except Exception as e:
-            return Response({'errors': e.args})
-
     def post(self, request) -> Response:
 
         serializer = UserSerializer(data=request.data)
@@ -61,12 +50,16 @@ class UserView(APIView):
         return Response(user_serializer.data, status=status.HTTP_201_CREATED)
 
     def patch(self, request) -> Response:
-        user_id = request.user
+        user = request.user
 
-        serializer = UpdateUserSerializer(data=request.data)
+        serializer = UpdateUserSerializer(
+            instance=user,
+            data=request.data,
+            partial=True
+        )
 
         if serializer.is_valid():
-            update = update_user(user_id, **serializer.validated_data)
+            update = update_user(user, **serializer.validated_data)
 
             return Response({
                 'new data': update,
@@ -84,8 +77,9 @@ class StatsView(APIView):
     permission_classes = [IsAdminUser]
 
     def get(self, request):
+        users = User.objects.all()
         plans = Plan.objects.all()
-        total = len(plans)
+        total = len(users)
         with_plan = len(plans.filter(is_active=True))
         without_plan = len(plans.filter(is_active=False))
 
