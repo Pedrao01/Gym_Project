@@ -20,7 +20,7 @@ export default function Perfil() {
     const { ok } = await updateProfile(form.username, form.email, form.phone_number);
     setMsg(ok
       ? { type: 'success', text: 'Perfil atualizado com sucesso!' }
-      : { type: 'error', text: 'Erro ao atualizar perfil.' }
+      : { type: 'error', text: 'Erro ao atualizar perfil. Esse(s) valor(es) já está/estão em uso.' }
     );
     setLoading(false);
   };
