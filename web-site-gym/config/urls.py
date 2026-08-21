@@ -22,15 +22,15 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('gym/create-user/', CreateUserViews.as_view()),
-    path('gym/user/', UserView.as_view()),
-    path('gym/login/', MyTokenObtainPairView.as_view()),
-    path('gym/refresh/', TokenRefreshView.as_view()),
+    path('gym/create-user/', CreateUserViews.as_view(), name='user-create'),
+    path('gym/user/', UserView.as_view(), name='user'),
+    path('gym/login/', MyTokenObtainPairView.as_view(), name='login'),
+    path('gym/refresh/', TokenRefreshView.as_view(), name='refresh'),
     path('gym/plan-payment/', PlanView.as_view(), name='plan-payment'),
     path('gym/payments/confirm/', PaymentConfirmView.as_view(), name='payment-confirm'),
     path('gym/payments/status/', PlanStatusView.as_view(), name='plan-status'),
     path('gym/plan/cancel/', PlanCancelView.as_view(), name='plan-cancel'),
-    path('gym/admin/stats/', StatsView.as_view()),
-    path('gym/admin/users/', ListUsersView.as_view()),
-    path('gym/admin/users/<int:user_id>/', UpdateUserView.as_view()),
+    path('gym/admin/stats/', StatsView.as_view(), name='admin-stats'),
+    path('gym/admin/users/', ListUsersView.as_view(), name='list-users'),
+    path('gym/admin/users/<int:user_id>/', UpdateUserView.as_view(), name='update-user'),
 ]
