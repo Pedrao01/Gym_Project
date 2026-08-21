@@ -24,7 +24,7 @@ class CreateUserViews(APIView):
         serializer = UserSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response({'errors': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = creates_user(**serializer.validated_data)
@@ -47,7 +47,7 @@ class UserView(APIView):
         user = get_by_username(username)
         user_serializer = UserSerializer(user)
 
-        return Response(user_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(user_serializer.data, status=status.HTTP_200_OK)
 
     def patch(self, request) -> Response:
         user = request.user
@@ -96,7 +96,7 @@ class ListUsersView(generics.ListAPIView):
     search_fields = ['username', 'email', 'phone_number']
 
     def get_queryset(self):
-        queryset = User.objects.filter(plan__isnull=False).prefetch_related('plan').order_by('id')
+        queryset = User.objects.filter(plan__isnull=False).select_related('plan').order_by('id')
 
         return queryset
 
@@ -105,8 +105,16 @@ class UpdateUserView(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
-        user = update_user_plan(kwargs['user_id'], request.data['is_active'])
+        if not kwargs:
+            return Response({'error': 'You must send user id in the route parameters'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        if 'is_active' not in request.data:
+            return Response({'error': "You must send 'is_active' in the body"},
+                            status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = update_user_plan(kwargs['user_id'], request.data['is_active'])
+            serializer = UserSerializer(user)
 
-        serializer = UserSerializer(user)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': e.args}, status.HTTP_400_BAD_REQUEST)
