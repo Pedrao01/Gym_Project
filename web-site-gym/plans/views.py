@@ -1,7 +1,7 @@
 from rest_framework.views import APIView, Response, status
 from django.core.exceptions import ObjectDoesNotExist
 from .services import create_preference, create_plan, cancel_plan, user_plan_is_active, update_plan, get_payment_mercadopago
-from django.db.utils import IntegrityError
+
 from .models import Plan
 
 
@@ -86,7 +86,7 @@ class PlanStatusView(APIView):
             user_plan = user.plan
             print('is_active:', user_plan.is_active, 'is_valid:', user_plan.is_valid)
             if not user_plan.is_valid:
-                raise ObjectDoesNotExist
+                return Response({'msg': 'The user plan is invalid'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({
                 'plan_name': user_plan.kind_plan,
                 'expires_at': user_plan.expected_payment,
@@ -94,7 +94,7 @@ class PlanStatusView(APIView):
             }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'msg': 'User does not have plan'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  Route: /gym/plan/cancel/
