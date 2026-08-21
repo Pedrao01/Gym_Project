@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from users.views import UserView, CreateUserViews, MyTokenObtainPairView, StatsView, ListUsersView, UpdateUserView
+from users.views import UserView, CreateUserViews, MyTokenObtainPairView, StatsView, ListUsersView, UpdatePlanUserView
 from plans.views import PlanView, PaymentConfirmView, PlanStatusView, PlanCancelView
 from rest_framework_simplejwt.views import TokenRefreshView
 
@@ -32,5 +32,5 @@ urlpatterns = [
     path('gym/plan/cancel/', PlanCancelView.as_view(), name='plan-cancel'),
     path('gym/admin/stats/', StatsView.as_view(), name='admin-stats'),
     path('gym/admin/users/', ListUsersView.as_view(), name='list-users'),
-    path('gym/admin/users/<int:user_id>/', UpdateUserView.as_view(), name='update-user'),
+    path('gym/admin/users/<int:user_id>/', UpdatePlanUserView.as_view(), name='update-user'),
 ]

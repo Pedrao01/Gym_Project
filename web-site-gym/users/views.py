@@ -101,7 +101,7 @@ class ListUsersView(generics.ListAPIView):
         return queryset
 
 
-class UpdateUserView(generics.UpdateAPIView):
+class UpdatePlanUserView(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
