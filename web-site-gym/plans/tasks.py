@@ -13,4 +13,5 @@ def check_expired_plans():
 
     )
     total = expired_plans.update(is_active=False, is_valid=False, expected_payment=None)
-    print(f'{total} expired plans updated')
+
+    return total
