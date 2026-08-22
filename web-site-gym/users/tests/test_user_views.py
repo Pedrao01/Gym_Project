@@ -212,13 +212,11 @@ class TestListUsers:
 
         response = authenticated_admin.get(self.url)
 
+        fields = ['id', 'username', 'email', 'phone_number', 'plan', 'is_staff']
+
         for user in response.data['results']:
-            assert 'id' in user
-            assert 'username' in user
-            assert 'email' in user
-            assert 'phone_number' in user
-            assert 'plan' in user
-            assert 'is_staff' in user
+            for field in fields:
+                assert field in user
 
     def test_return_only_users_with_plan(self, authenticated_admin, create_five_plans):
 
@@ -245,25 +243,33 @@ class TestListUsers:
 
         response = authenticated_admin.get(self.url, data={'search': 'pedro'}, format='json')
 
-        user = response.data['results'][0]
-        serializer = UserSerializer(data=valid_user)
+        fields = ['id', 'username', 'email', 'phone_number', 'plan', 'is_staff']
 
-        if serializer.is_valid():
-            assert user == serializer
+        for field in fields:
+            assert field in response.data['results'][0]
 
 
 class TestUpdatePlanUser:
 
-    def test_when_request_update_plan_user_view_is_valid(self, authenticated_admin, valid_user, valid_plan):
+    def test_when_update_plan_is_successful(self, authenticated_admin, valid_user, valid_plan):
         url = reverse('update-plan-user', kwargs={'user_id': valid_user.id})
 
         response = authenticated_admin.patch(url, {'is_active': False}, format='json')
 
         assert response.status_code == status.HTTP_200_OK
 
-        serializer = UserSerializer(data=valid_user)
-        if serializer.is_valid():
-            assert response.data == serializer.data
+        valid_plan.refresh_from_db()
+        assert valid_plan.is_active is False
+
+    def test_response_contains_expected_fields(self, authenticated_admin, valid_user, valid_plan):
+        url = reverse('update-plan-user', kwargs={'user_id': valid_user.id})
+
+        response = authenticated_admin.patch(url, {'is_active': False}, format='json')
+
+        fields = ['id', 'username', 'email', 'phone_number', 'plan', 'is_staff']
+
+        for field in fields:
+            assert field in response.data
 
     def test_when_body_is_not_sent(self, authenticated_admin, valid_user, valid_plan):
         url = reverse('update-plan-user', kwargs={'user_id': valid_user.id})
