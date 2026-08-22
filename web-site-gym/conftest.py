@@ -43,3 +43,19 @@ def valid_user_1(db, django_user_model):
         phone_number='74999873645',
         password='manel123'
     )
+
+
+@pytest.fixture
+def create_five_users(db, django_user_model):
+    users = []
+
+    for i in range(5):
+        user = django_user_model.objects.create(
+            username=f'user{i}',
+            email=f'user{i}@gmail.com',
+            phone_number=f'7499912345{i}',
+            password='12345678'
+        )
+        users.append(user)
+
+    return users
