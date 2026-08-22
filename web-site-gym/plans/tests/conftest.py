@@ -2,6 +2,7 @@ import pytest
 
 from datetime import date
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
 from plans.models import Plan
 
 
@@ -19,7 +20,7 @@ def inactive_plan(db, valid_user):
         kind_plan='mensal',
         payment_id='123456',
         is_active=False,
-        expected_payment=date(2026, 6, 13)
+        expected_payment=timezone.now().date() - relativedelta(months=1)
     )
 
 
@@ -28,7 +29,9 @@ def invalid_plan(db, valid_user):
     return Plan.objects.create(
         user=valid_user,
         kind_plan='mensal',
-        is_valid=False
+        is_valid=False,
+        is_active=False,
+        expected_payment=timezone.now().date() - relativedelta(months=1)
     )
 
 
@@ -53,3 +56,20 @@ def payment_mock_valid(valid_user, valid_plan):
             }]
         }
     }
+
+
+@pytest.fixture
+def five_plans_with_invalid_date(db, create_five_users):
+    plans = []
+
+    for i in range(5):
+        plan = Plan.objects.create(
+            user=create_five_users[i],
+            kind_plan=f'mensal',
+            payment_id=f'12345{i}',
+            expected_payment=timezone.now().date() - relativedelta(months=1)
+        )
+
+        plans.append(plan)
+
+    return plans
