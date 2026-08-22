@@ -111,6 +111,8 @@ class UpdatePlanUserView(generics.UpdateAPIView):
         if 'is_active' not in request.data:
             return Response({'error': "You must send 'is_active' in the body"},
                             status=status.HTTP_400_BAD_REQUEST)
+        if not isinstance(request.data['is_active'], bool):
+            return Response({'error': 'is_active must be bool'}, status=status.HTTP_400_BAD_REQUEST)
         try:
             user = update_user_plan(kwargs['user_id'], request.data['is_active'])
             serializer = UserSerializer(user)
