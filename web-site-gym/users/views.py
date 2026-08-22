@@ -105,9 +105,6 @@ class UpdatePlanUserView(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
-        if not kwargs:
-            return Response({'error': 'You must send user id in the route parameters'},
-                            status=status.HTTP_400_BAD_REQUEST)
         if 'is_active' not in request.data:
             return Response({'error': "You must send 'is_active' in the body"},
                             status=status.HTTP_400_BAD_REQUEST)
