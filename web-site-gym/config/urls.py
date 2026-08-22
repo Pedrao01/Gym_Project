@@ -32,5 +32,5 @@ urlpatterns = [
     path('gym/plan/cancel/', PlanCancelView.as_view(), name='plan-cancel'),
     path('gym/admin/stats/', StatsView.as_view(), name='admin-stats'),
     path('gym/admin/users/', ListUsersView.as_view(), name='list-users'),
-    path('gym/admin/users/<int:user_id>/', UpdatePlanUserView.as_view(), name='update-user'),
+    path('gym/admin/users/<int:user_id>/', UpdatePlanUserView.as_view(), name='update-plan-user'),
 ]
