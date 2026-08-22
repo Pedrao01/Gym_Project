@@ -209,7 +209,6 @@ class TestCancelPlan:
     def test_return_200_when_successful_in_plan_cancel(
             self, authenticated_client, valid_user, valid_plan
     ):
-        assert valid_plan.is_active is True
 
         response = authenticated_client.post(
             self.url,
@@ -218,6 +217,7 @@ class TestCancelPlan:
         )
 
         assert response.status_code == status.HTTP_200_OK
+        valid_plan.refresh_from_db()
         assert valid_plan.is_active is False
         assert response.data == {
             'plan_name': valid_plan.kind_plan,
