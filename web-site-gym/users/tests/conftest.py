@@ -24,7 +24,7 @@ def return_jwt_decoded():
 
 
 @pytest.fixture
-def admin_user(django_user_model):
+def admin_user(db, django_user_model):
     admin = django_user_model.objects.create_superuser(
         username='cleber',
         email='clebin@gmail.com',
