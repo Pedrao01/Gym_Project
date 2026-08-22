@@ -145,12 +145,23 @@ MERCADOPAGO_ACCESS_TOKEN=
 pytest
 ```
 
+Cobertura atual: **54 testes** distribuídos entre os apps `plans` e `users`.
+
+| Arquivo | Escopo | Testes |
+|---|---|---|
+| `plans/tests/test_plan_services.py` | Services de plano | 6 |
+| `plans/tests/test_plan_tasks.py` | Task Celery de expiração | 4 |
+| `plans/tests/test_plan_views.py` | Endpoints de plano e pagamento | 12 |
+| `users/tests/test_user_services.py` | Services de usuário | 7 |
+| `users/tests/test_user_views.py` | Endpoints de usuário e admin | 25 |
+
+Cenários cobertos: criação e validação de usuários, autenticação JWT com claims customizados, fluxo completo de pagamento (com mock da API do Mercado Pago), status e cancelamento de planos, permissões por perfil (aluno vs admin), paginação, busca e expiração automática de planos via Celery.
+
 *(cobertura de testes em desenvolvimento)*
 
 ## 🗺️ Roadmap
 
 - [ ] Webhook assíncrono do Mercado Pago (validação de assinatura)
-- [ ] Suíte de testes automatizados (pytest)
 - [ ] Docker Compose completo (incluindo serviço web e Celery)
 - [ ] Pipeline de CI
 
