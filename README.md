@@ -157,8 +157,6 @@ Cobertura atual: **54 testes** distribuídos entre os apps `plans` e `users`.
 
 Cenários cobertos: criação e validação de usuários, autenticação JWT com claims customizados, fluxo completo de pagamento (com mock da API do Mercado Pago), status e cancelamento de planos, permissões por perfil (aluno vs admin), paginação, busca e expiração automática de planos via Celery.
 
-*(cobertura de testes em desenvolvimento)*
-
 ## 🗺️ Roadmap
 
 - [ ] Webhook assíncrono do Mercado Pago (validação de assinatura)
