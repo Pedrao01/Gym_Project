@@ -1,0 +1,32 @@
+# Python
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+
+# Django
+*.log
+db.sqlite3
+.pytest_cache
+pytest.ini
+
+# Ambiente
+.env
+.env.example
+
+# Git
+.git
+.gitignore
+
+# Editor
+.vscode
+.idea
+
+# Docs
+*.md
+LICENSE
+
+# Docker
+Dockerfile
+docker-compose.yml
