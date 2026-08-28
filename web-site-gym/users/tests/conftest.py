@@ -56,9 +56,3 @@ def create_five_plans(db, create_five_users):
 
     return plans
 
-
-@pytest.fixture
-def return_serialized_user(db, django_user_model, valid_user):
-    serializer = UserSerializer(data=valid_user)
-    if serializer.is_valid():
-        return serializer.data
