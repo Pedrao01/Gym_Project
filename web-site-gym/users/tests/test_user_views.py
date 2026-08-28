@@ -163,6 +163,23 @@ class TestUser:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
+    def test_return_of_method_patch_when_updated_successful(self, authenticated_client, valid_user):
+
+        data = {
+            'username': 'pedro',
+            'email': 'pedrin@gmail.com',
+            'phone_number': '74999876543'
+        }
+
+        response = authenticated_client.patch(self.url, data, format='json')
+        valid_user.refresh_from_db()
+
+        assert response.status_code == status.HTTP_200_OK
+        assert valid_user.username == data.get('username')
+        assert valid_user.email == data.get('email')
+        assert valid_user.phone_number == data.get('phone_number')
+        assert 'new data' in response.data
+
 
 class TestStats:
     url = reverse('admin-stats')
