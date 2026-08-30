@@ -26,15 +26,13 @@ def creates_user(username: str, email: str, phone_number: str, password: str) ->
         raise ValidationError('Database internal error')
 
 
-def update_user(user: User, username: str, email: str, phone_number: str) -> User:
+def update_user(user: User, username: str, email: str, phone_number: str) -> int:
     try:
-        user = User.objects.filter(id=user.id).update(
+        User.objects.filter(id=user.id).update(
             username=username,
             email=email,
             phone_number=phone_number
         )
-
-        return user
 
     except OperationalError:
         raise ValidationError('Database internal error')

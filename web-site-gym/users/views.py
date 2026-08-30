@@ -59,11 +59,8 @@ class UserView(APIView):
         )
 
         if serializer.is_valid():
-            update = update_user(user, **serializer.validated_data)
-
-            return Response({
-                'new data': update,
-            }, status=status.HTTP_200_OK)
+            update_user(user, **serializer.validated_data)
+            return Response({}, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
