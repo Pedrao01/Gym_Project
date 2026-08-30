@@ -51,7 +51,7 @@ class PaymentConfirmView(APIView):
             return Response({
                 'plan_name': plan.kind_plan,
                 'expires_at': plan.expected_payment,
-                'is_active': plan.is_valid
+                'is_active': plan.is_active
             }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
@@ -62,7 +62,7 @@ class PaymentConfirmView(APIView):
                     return Response({
                         'plan_name': plan.kind_plan,
                         'expires_at': plan.expected_payment,
-                        'is_active': plan.is_valid
+                        'is_active': plan.is_active
                     }, status=status.HTTP_200_OK)
 
                 plan = create_plan(user, plan_kind, payment_id)
@@ -70,7 +70,7 @@ class PaymentConfirmView(APIView):
                 return Response({
                     'plan_name': plan.kind_plan,
                     'expires_at': plan.expected_payment,
-                    'is_active': plan.is_valid
+                    'is_active': plan.is_active
                 }, status=status.HTTP_200_OK)
 
             except Exception:
