@@ -59,16 +59,8 @@ class UserView(APIView):
         )
 
         if serializer.is_valid():
-            result = update_user(user, **serializer.validated_data)
-
-            if result > 0:
-                return Response({
-                    'result': result,
-                }, status=status.HTTP_200_OK)
-
-            return Response({
-                'error': 'error at try update user'
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            update_user(user, **serializer.validated_data)
+            return Response({}, status=status.HTTP_200_OK)
 
         return Response({}, status=status.HTTP_400_BAD_REQUEST)
 
