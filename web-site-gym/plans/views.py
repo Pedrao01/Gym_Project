@@ -19,7 +19,6 @@ class PlanView(APIView):
             return Response({'error': '❌ Plano já está ativo.'}, status=status.HTTP_400_BAD_REQUEST)
 
         else:
-            print('objects dont exists')
             data = create_preference(data["plan"], user)
 
             return Response(data, status=status.HTTP_200_OK)
@@ -84,7 +83,7 @@ class PlanStatusView(APIView):
         user = request.user
         try:
             user_plan = user.plan
-            print('is_active:', user_plan.is_active, 'is_valid:', user_plan.is_valid)
+
             if not user_plan.is_valid:
                 return Response({'msg': 'The user plan is invalid'}, status=status.HTTP_400_BAD_REQUEST)
             return Response({
@@ -116,5 +115,4 @@ class PlanCancelView(APIView):
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            print(e.args)
-            return Response({}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': e.args}, status=status.HTTP_400_BAD_REQUEST)
