@@ -7,11 +7,13 @@ from dateutil.relativedelta import relativedelta
 from datetime import date
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils import timezone
+from decouple import config
 
 
 def create_preference(plan_id: str, user: User):
     sdk = get_sdk()
     plan = PLANS.get(plan_id)
+    back_url = config('BACK_URL')
 
     preference_data = {
         "items": [{
@@ -24,9 +26,9 @@ def create_preference(plan_id: str, user: User):
             "category_id": plan_id
         }, ],
         "back_urls": {
-            "success": "localhost:5173/?status=approved",
-            "failure": "localhost:5173/?status=failure",
-            "pending": "localhost:5173/?status=pending",
+            "success": f"{back_url}/?status=approved",
+            "failure": f"{back_url}/?status=failure",
+            "pending": f"{back_url}/?status=pending",
         },
         "auto_return": "all"
     }
@@ -37,7 +39,7 @@ def create_preference(plan_id: str, user: User):
     return payment
 
 
-def get_payment_mercadopago(payment_id: int) -> str:
+def get_payment_mercadopago(payment_id: int) -> dict:
     sdk = get_sdk()
 
     request = sdk.payment().get(payment_id=payment_id)
@@ -55,7 +57,6 @@ def update_plan(user: User, plan_kind: str, payment_id):
             plan.save(update_fields=['is_active', 'is_valid',  'payment_id'])
 
             number_months = PLANS.get(plan_kind).get('number_months')
-            print(plan_kind, number_months)
             plan = update_next_payment(plan, number_months)
 
         return plan
