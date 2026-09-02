@@ -44,17 +44,21 @@ export default function Pagamentos() {
     const plan = PLANS.find(p => p.id === planId)
     localStorage.removeItem('selectedPlan')
     const paymentId = params.get('payment_id');
+    const status = params.get('status')
 
-    const { httpStatus, data } = await confirmPayment(paymentId);
+    if (status === 'approved') {
+        const { httpStatus, data } = await confirmPayment(paymentId);
 
-    if (httpStatus === 200) {
-      setMsg({ type: 'success', text: '✅ Pagamento aprovado! Seu plano já está ativo.' });
-      setStatus(data);
-    } else if (httpStatus === 202) {
-      setMsg({ type: 'warning', text: '⏳ Pagamento pendente. Aguarde a confirmação.' });
-    } else if (httpStatus === 400) {
-      setMsg({ type: 'error', text: '❌ Pagamento recusado. Tente novamente.' });
+        if (httpStatus === 200) {
+          setMsg({ type: 'success', text: '✅ Pagamento aprovado! Seu plano já está ativo.' });
+          setStatus(data);
+        } else if (httpStatus === 202) {
+          setMsg({ type: 'warning', text: '⏳ Pagamento pendente. Aguarde a confirmação.' });
+        } else if (httpStatus === 400) {
+          setMsg({ type: 'error', text: '❌ Pagamento recusado. Tente novamente.' });
+        }
     }
+    setMsg({ type: 'error', text: '❌ Falha em efetuar o pagamento. Tente novamente.'})
 
     // 4. Limpa a URL independente do resultado
     window.history.replaceState({}, '', '/');
