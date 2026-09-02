@@ -28,7 +28,7 @@ class PlanView(APIView):
 class PaymentConfirmView(APIView):
     def post(self, request) -> Response:
         payment_id = request.data.get('payment_id')
-        if not payment_id:
+        if not payment_id or payment_id is None:
             return Response({'error': 'PaymentId no provide'}, status=status.HTTP_400_BAD_REQUEST)
         payment = get_payment_mercadopago(int(payment_id))
 
@@ -111,7 +111,7 @@ class PlanCancelView(APIView):
             return Response({
                 'plan_name': plan.kind_plan,
                 'expires_at': plan.expected_payment,
-                'is_active': plan.is_valid
+                'is_active': plan.is_active
             }, status=status.HTTP_200_OK)
 
         except Exception as e:
