@@ -37,9 +37,6 @@ class CreateUserViews(APIView):
         except ValidationError as e:
             return Response({'errors': e.message}, status=status.HTTP_400_BAD_REQUEST)
 
-        except Exception:
-            return Response({'error': 'Internal Server Error'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
 
 class UserView(APIView):
     def get(self, request) -> Response:
@@ -107,10 +104,8 @@ class UpdatePlanUserView(generics.UpdateAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
         if not isinstance(request.data['is_active'], bool):
             return Response({'error': 'is_active must be bool'}, status=status.HTTP_400_BAD_REQUEST)
-        try:
-            user = update_user_plan(kwargs['user_id'], request.data['is_active'])
-            serializer = UserSerializer(user)
 
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        except Exception as e:
-            return Response({'error': e.args}, status.HTTP_400_BAD_REQUEST)
+        user = update_user_plan(kwargs['user_id'], request.data['is_active'])
+        serializer = UserSerializer(user)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)

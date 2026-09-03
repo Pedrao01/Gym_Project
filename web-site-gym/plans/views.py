@@ -54,17 +54,9 @@ class PaymentConfirmView(APIView):
             }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
-            try:
-                if Plan.objects.filter(user=user).exists():
-                    plan = update_plan(user, plan_kind, payment_id)
 
-                    return Response({
-                        'plan_name': plan.kind_plan,
-                        'expires_at': plan.expected_payment,
-                        'is_active': plan.is_active
-                    }, status=status.HTTP_200_OK)
-
-                plan = create_plan(user, plan_kind, payment_id)
+            if Plan.objects.filter(user=user).exists():
+                plan = update_plan(user, plan_kind, payment_id)
 
                 return Response({
                     'plan_name': plan.kind_plan,
@@ -72,8 +64,13 @@ class PaymentConfirmView(APIView):
                     'is_active': plan.is_active
                 }, status=status.HTTP_200_OK)
 
-            except Exception:
-                return Response({}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            plan = create_plan(user, plan_kind, payment_id)
+
+            return Response({
+                'plan_name': plan.kind_plan,
+                'expires_at': plan.expected_payment,
+                'is_active': plan.is_active
+            }, status=status.HTTP_200_OK)
 
 
 #  Route: /gym/payments/status/
@@ -100,19 +97,15 @@ class PlanStatusView(APIView):
 class PlanCancelView(APIView):
     def post(self, request) -> Response:
         user = request.user
-        try:
-            plan = cancel_plan(user)
+        plan = cancel_plan(user)
 
-            if plan is None:
-                return Response({
-                    'error': 'Internal server error'
-                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
+        if plan is None:
             return Response({
-                'plan_name': plan.kind_plan,
-                'expires_at': plan.expected_payment,
-                'is_active': plan.is_active
-            }, status=status.HTTP_200_OK)
+                'error': 'Internal server error'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-        except Exception as e:
-            return Response({'error': e.args}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({
+            'plan_name': plan.kind_plan,
+            'expires_at': plan.expected_payment,
+            'is_active': plan.is_active
+        }, status=status.HTTP_200_OK)
