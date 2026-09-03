@@ -308,4 +308,4 @@ class TestUpdatePlanUser:
 
         response = authenticated_admin.patch(url, {'is_active': False}, format='json')
 
-        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert response.status_code == status.HTTP_404_NOT_FOUND

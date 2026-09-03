@@ -2,6 +2,7 @@ import pytest
 from users.services import get_by_username, creates_user, update_user, update_user_plan
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from django.http import Http404
 
 
 def test_get_user_by_username_function(valid_user):
@@ -56,10 +57,10 @@ def test_update_user_plan(valid_user, valid_plan):
 
 
 def test_try_update_user_with_invalid_id(valid_user):
-    with pytest.raises(Exception, match='Dont exists user with id provided or user dont have a plan'):
+    with pytest.raises(Http404, match='No User matches the given query.'):
         update_user_plan(3, False)
 
 
 def test_try_update_user_that_dont_have_plan(valid_user):
-    with pytest.raises(Exception, match='Dont exists user with id provided or user dont have a plan'):
+    with pytest.raises(Http404, match='No Plan matches the given query.'):
         update_user_plan(valid_user.id, False)
