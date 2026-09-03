@@ -222,5 +222,5 @@ class TestCancelPlan:
         assert response.data == {
             'plan_name': valid_plan.kind_plan,
             'expires_at': valid_plan.expected_payment,
-            'is_active': valid_plan.is_valid
+            'is_active': valid_plan.is_active
         }

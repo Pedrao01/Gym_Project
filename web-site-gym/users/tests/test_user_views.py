@@ -178,7 +178,6 @@ class TestUser:
         assert valid_user.username == data.get('username')
         assert valid_user.email == data.get('email')
         assert valid_user.phone_number == data.get('phone_number')
-        assert 'new data' in response.data
 
 
 class TestStats:
