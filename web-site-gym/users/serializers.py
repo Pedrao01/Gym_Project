@@ -32,8 +32,3 @@ class MyTokenSerializer(TokenObtainPairSerializer):
 
         return token
 
-
-class StatsSerializer(serializers.ModelSerializer):
-    total = serializers.IntegerField(read_only=True)
-    with_plan = serializers.IntegerField(read_only=True)
-    without_plan = serializers.IntegerField(read_only=True)
