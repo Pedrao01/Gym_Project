@@ -3,6 +3,10 @@ from users.services import get_by_username, creates_user, update_user, update_us
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.http import Http404
+from django.db import DatabaseError
+from django.db.models.query import QuerySet
+from unittest.mock import patch
+
 
 
 def test_get_user_by_username_function(valid_user):
@@ -46,6 +50,19 @@ def test_update_user_is_successful(valid_user):
     assert valid_user.username == 'manel'
     assert valid_user.email == 'cabeca@gmail.com'
     assert valid_user.phone_number == '74999458944'
+
+
+def test_update_user_raises_unexpected_exception(valid_user):
+    with patch('users.services.User.objects.filter') as mock_filter:
+        mock_filter.return_value.update.side_effect = TypeError('unexpected boom')
+
+        with pytest.raises(TypeError, match='unexpected boom'):
+            update_user(
+                user=valid_user,
+                username='manel',
+                email='cabeca@gmail.com',
+                phone_number='74999458944'
+            )
 
 
 def test_update_user_plan(valid_user, valid_plan):
