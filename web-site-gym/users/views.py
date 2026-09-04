@@ -59,7 +59,7 @@ class UserView(APIView):
             update_user(user, **serializer.validated_data)
             return Response({}, status=status.HTTP_200_OK)
 
-        return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  Rota: gym/login/
