@@ -38,9 +38,6 @@ def update_user(user: User, username: str, email: str, phone_number: str) -> int
     except OperationalError:
         raise ValidationError('Database internal error')
 
-    except Exception:
-        raise Exception('Internal server error')
-
 
 def update_user_plan(user_id, is_active):
     user = get_object_or_404(User, id=user_id)
