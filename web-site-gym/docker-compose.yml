@@ -27,6 +27,28 @@ services:
       - redis
     env_file: .env
 
+  celery-beat:
+    build: .
+    container_name: celery-beat-gym
+    command: celery -A config beat --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    env_file: .env
+
+  celery-work:
+    build: .
+    container_name: celery-work-gym
+    command: celery -A config worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db
+    env_file: .env
+
   nginx:
     image: nginx:alpine
     container_name: nginx_gym
@@ -41,7 +63,7 @@ services:
       - gym-web
 
   frontend-builder:
-    build: ./gym-frontend
+    build: ../gym-frontend
     volumes:
       - frontend_dist:/app/dist
 
