@@ -1,6 +1,11 @@
 services:
   db:
     image: postgres:16
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
     environment:
       POSTGRES_DB: ${DB_NAME}
       POSTGRES_USER: ${DB_USER}
@@ -18,13 +23,34 @@ services:
     container_name: web-site-gym
     volumes:
       - .:/app
-      - static_volume:/app/staticfiles
-      - media_volume:/app/media
     expose:
       - "8000"
     depends_on:
-      - db
-      - redis
+      migretion:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+    env_file: .env
+
+  migretion:
+    build: .
+    command: python manage.py migrate
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+
+  collectstatic:
+    build: .
+    command: python manage.py collectstatic --noinput
+    volumes:
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
     env_file: .env
 
   celery-beat:
@@ -34,8 +60,12 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - redis
-      - db
+      migretion:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     env_file: .env
 
   celery-work:
@@ -45,8 +75,12 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - redis
-      - db
+      migretion:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
     env_file: .env
 
   nginx:
@@ -60,7 +94,12 @@ services:
       - media_volume:/app/media:ro
       - frontend_dist:/app/frontend:ro
     depends_on:
-      - gym-web
+      gym-web:
+        condition: service_started
+      collectstatic:
+        condition: service_completed_successfully
+      frontend-builder:
+        condition: service_completed_successfully
 
   frontend-builder:
     build: ../gym-frontend
