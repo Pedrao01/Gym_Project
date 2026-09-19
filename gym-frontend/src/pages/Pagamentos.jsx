@@ -57,8 +57,9 @@ export default function Pagamentos() {
         } else if (httpStatus === 400) {
           setMsg({ type: 'error', text: '❌ Pagamento recusado. Tente novamente.' });
         }
+    } else {
+        setMsg({ type: 'error', text: '❌ Falha em efetuar o pagamento. Tente novamente.'})
     }
-    setMsg({ type: 'error', text: '❌ Falha em efetuar o pagamento. Tente novamente.'})
 
     // 4. Limpa a URL independente do resultado
     window.history.replaceState({}, '', '/');
