@@ -19,10 +19,8 @@ services:
       - redis_data:/data
 
   gym-web:
-    build: .
+    image: web-site-gym:latest
     container_name: web-site-gym
-    volumes:
-      - .:/app
     expose:
       - "8000"
     depends_on:
@@ -36,17 +34,15 @@ services:
     env_file: .env
 
   migretion:
-    build: .
+    image: web-site-gym:latest
     command: python manage.py migrate
-    volumes:
-      - .:/app
     depends_on:
       db:
         condition: service_healthy
     env_file: .env
 
   collectstatic:
-    build: .
+    image: web-site-gym:latest
     command: python manage.py collectstatic --noinput
     volumes:
       - static_volume:/app/staticfiles
@@ -54,11 +50,9 @@ services:
     env_file: .env
 
   celery-beat:
-    build: .
+    image: web-site-gym:latest
     container_name: celery-beat-gym
     command: celery -A config beat --loglevel=info
-    volumes:
-      - .:/app
     depends_on:
       migretion:
         condition: service_completed_successfully
@@ -69,11 +63,9 @@ services:
     env_file: .env
 
   celery-work:
-    build: .
+    image: web-site-gym:latest
     container_name: celery-work-gym
     command: celery -A config worker --loglevel=info
-    volumes:
-      - .:/app
     depends_on:
       migretion:
         condition: service_completed_successfully
