@@ -32,6 +32,7 @@ jobs:
         run: docker compose up -d db
 
       - name: Wait for the database to be finished
+        working-directory: web-site-gym
         run: |
           until docker compose exec -T db pg_isready -U postgres; do
             echo "Waiting the database"
