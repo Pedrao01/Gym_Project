@@ -13,7 +13,6 @@ jobs:
 
     steps:
       - name: Download the code
-        working-directory: web-site-gym
         uses: actions/checkout@v4
 
       - name: Setup Python
@@ -23,11 +22,13 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
+        working-directory: web-site-gym
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: spin up the database using docker-compose
+        working-directory: web-site-gym
         run: docker compose up -d db
 
       - name: Wait for the database to be finished
@@ -44,11 +45,14 @@ jobs:
           isort --check-only .
 
       - name: Check migrations pending
+        working-directory: web-site-gym
         run: python manage.py makemigration --check --dry-run
 
       - name: Run tests with coverage
+        working-directory: web-site-gym
         run: pytest --cov=. --cov-report=term-missing
 
       - name: Knocks down the containers
+        working-directory: web-site-gym
         if: always()
         run: docker compose down
