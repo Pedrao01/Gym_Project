@@ -13,6 +13,7 @@ jobs:
 
     steps:
       - name: Download the code
+        working-directory: web-site-gym
         uses: actions/checkout@v4
 
       - name: Setup Python
