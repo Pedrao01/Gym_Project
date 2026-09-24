@@ -1,0 +1,53 @@
+name: CI - Testing and Quality (Django)
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Lint and Tests
+    runs-on: ubuntu-latest
+
+    step:
+      - name: Download the code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10.4'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: spin up the database using docker-compose
+        run: docker compose up -d db
+
+      - name: Wait for the database to be finished
+        run: |
+          until docker compose exec -T db pg_isready -U postgres; do
+            echo "Waiting the database"
+            sleep 1
+          done
+
+      - name: Run lint and formatting
+        run: |
+          flake8 .
+          black --check .
+          isort --check-only .
+
+      - name: Check migrations pending
+        run: python manage.py makemigration --check --dry-run
+
+      - name: Run tests with coverage
+        run: pytest --cov=. --cov-report=term-missing
+
+      - name: Knocks down the containers
+        if: always()
+        run: docker compose down
