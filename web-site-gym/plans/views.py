@@ -16,7 +16,10 @@ class PlanView(APIView):
         data = request.data
 
         if user_plan_is_active(user):
-            return Response({'error': '❌ Plano já está ativo.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': '❌ Plano já está ativo.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         else:
             data = create_preference(data["plan"], user)
@@ -29,7 +32,10 @@ class PaymentConfirmView(APIView):
     def post(self, request) -> Response:
         payment_id = request.data.get('payment_id')
         if not payment_id or payment_id is None:
-            return Response({'error': 'PaymentId no provide'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'PaymentId no provide'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
         payment = get_payment_mercadopago(int(payment_id))
 
         user = request.user
@@ -41,7 +47,10 @@ class PaymentConfirmView(APIView):
             )
 
         if payment['status'] != 'approved':
-            return Response({'error': 'Invalid payment'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Invalid payment'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         plan_kind = payment['additional_info']['items'][0]['category_id']
 
@@ -82,7 +91,8 @@ class PlanStatusView(APIView):
             user_plan = user.plan
 
             if not user_plan.is_valid:
-                return Response({'msg': 'The user plan is invalid'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response({'msg': 'The user plan is invalid'},
+                                status=status.HTTP_400_BAD_REQUEST)
             return Response({
                 'plan_name': user_plan.kind_plan,
                 'expires_at': user_plan.expected_payment,
@@ -90,7 +100,10 @@ class PlanStatusView(APIView):
             }, status=status.HTTP_200_OK)
 
         except ObjectDoesNotExist:
-            return Response({'msg': 'User does not have plan'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'msg': 'User does not have plan'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
 
 #  Route: /gym/plan/cancel/
@@ -100,9 +113,10 @@ class PlanCancelView(APIView):
         plan = cancel_plan(user)
 
         if plan is None:
-            return Response({
-                'error': 'Internal server error'
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response(
+                {'error': 'Internal server error'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
         return Response({
             'plan_name': plan.kind_plan,
