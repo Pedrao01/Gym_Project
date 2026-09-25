@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from rest_framework.views import APIView, Response, status
 from .serializers import UserSerializer, UpdateUserSerializer, MyTokenSerializer
@@ -8,7 +7,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.pagination import PageNumberPagination
+
 
 from .models import User
 from plans.models import Plan

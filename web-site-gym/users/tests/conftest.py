@@ -1,9 +1,6 @@
 import pytest
-from rest_framework.test import APIClient
 import jwt
-
 from plans.models import Plan
-from users.serializers import UserSerializer
 
 
 @pytest.fixture

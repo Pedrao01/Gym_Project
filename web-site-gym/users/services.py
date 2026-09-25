@@ -1,6 +1,6 @@
 from .models import User
 from plans.models import Plan
-from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError, OperationalError
 from rest_framework.generics import get_object_or_404
 

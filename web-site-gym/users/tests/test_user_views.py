@@ -2,8 +2,6 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from plans.models import Plan
-from users.models import User
-from users.serializers import UserSerializer
 
 
 class TestCreateUser:

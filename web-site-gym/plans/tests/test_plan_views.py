@@ -1,8 +1,6 @@
 import pytest
 from django.urls import reverse
 from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from users.models import User
 from plans.models import Plan
 from unittest.mock import patch
 

@@ -1,12 +1,8 @@
 import pytest
 from users.services import get_by_username, creates_user, update_user, update_user_plan
-from django.db import IntegrityError
 from django.core.exceptions import ValidationError
 from django.http import Http404
-from django.db import DatabaseError
-from django.db.models.query import QuerySet
 from unittest.mock import patch
-
 
 
 def test_get_user_by_username_function(valid_user):
