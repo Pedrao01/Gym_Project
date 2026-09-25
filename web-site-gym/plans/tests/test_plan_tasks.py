@@ -1,4 +1,3 @@
-import pytest
 from plans.tasks import check_expired_plans
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta

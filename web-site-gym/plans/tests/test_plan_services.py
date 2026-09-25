@@ -1,4 +1,3 @@
-import pytest
 from plans.services import create_plan, update_plan, update_next_payment, cancel_plan, user_plan_is_active
 from django.utils import timezone
 from plans.plans import PLANS

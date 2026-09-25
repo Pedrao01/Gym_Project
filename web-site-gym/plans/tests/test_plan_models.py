@@ -1,4 +1,3 @@
-import pytest
 
 
 def test__str__of_model(valid_plan):
