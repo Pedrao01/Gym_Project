@@ -55,7 +55,7 @@ jobs:
 
       - name: Run lint and formatting
         run: |
-          flake8 . --max-line-length=120
+          flake8 . --max-line-length=120 --exclude=*/migrations/*
           black --check .
           isort --check-only .
 
