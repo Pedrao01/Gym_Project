@@ -1,4 +1,4 @@
-from .base import *
+from .base import *  # noqa: F401, 403
 from decouple import config
 
 DEBUG = False
