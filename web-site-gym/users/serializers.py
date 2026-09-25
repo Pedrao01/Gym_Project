@@ -31,4 +31,3 @@ class MyTokenSerializer(TokenObtainPairSerializer):
         token['is_staff'] = user.is_staff
 
         return token
-

@@ -52,4 +52,3 @@ def create_five_plans(db, create_five_users):
         plans.append(plan)
 
     return plans
-
