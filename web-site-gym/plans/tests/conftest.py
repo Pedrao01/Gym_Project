@@ -65,7 +65,7 @@ def five_plans_with_invalid_date(db, create_five_users):
     for i in range(5):
         plan = Plan.objects.create(
             user=create_five_users[i],
-            kind_plan=f'mensal',
+            kind_plan='mensal',
             payment_id=f'12345{i}',
             expected_payment=timezone.now().date() - relativedelta(months=1)
         )
