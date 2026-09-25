@@ -54,6 +54,7 @@ jobs:
         run: pip install flake8 black isort
 
       - name: Run lint and formatting
+        working-directory: web-site-gym
         run: |
           flake8 . 
           black --check .
