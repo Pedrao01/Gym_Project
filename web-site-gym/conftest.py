@@ -1,8 +1,9 @@
 import pytest
-from rest_framework.test import APIClient
-from plans.models import Plan
-from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
+from rest_framework.test import APIClient
+
+from plans.models import Plan
 
 
 @pytest.fixture

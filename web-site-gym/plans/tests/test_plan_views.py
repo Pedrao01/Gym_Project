@@ -1,7 +1,9 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from rest_framework import status
+
 from plans.models import Plan
-from unittest.mock import patch
 
 
 class TestPaymentPlan:

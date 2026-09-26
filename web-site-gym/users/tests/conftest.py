@@ -1,5 +1,6 @@
-import pytest
 import jwt
+import pytest
+
 from plans.models import Plan
 
 

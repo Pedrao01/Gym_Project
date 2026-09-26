@@ -1,5 +1,6 @@
-from .base import *  # noqa: F401, 403
 from decouple import config
+
+from .base import *  # noqa: F401, 403
 
 DEBUG = False
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", cast=Csv())

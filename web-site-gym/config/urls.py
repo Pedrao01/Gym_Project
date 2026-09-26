@@ -17,16 +17,17 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from rest_framework_simplejwt.views import TokenRefreshView
+
+from plans.views import PaymentConfirmView, PlanCancelView, PlanStatusView, PlanView
 from users.views import (
-    UserView,
     CreateUserViews,
+    ListUsersView,
     MyTokenObtainPairView,
     StatsView,
-    ListUsersView,
     UpdatePlanUserView,
+    UserView,
 )
-from plans.views import PlanView, PaymentConfirmView, PlanStatusView, PlanCancelView
-from rest_framework_simplejwt.views import TokenRefreshView
 
 urlpatterns = [
     path("admin/", admin.site.urls),

@@ -1,16 +1,16 @@
 from django.core.exceptions import ValidationError
-from rest_framework.views import APIView, Response, status
-from .serializers import UserSerializer, UpdateUserSerializer, MyTokenSerializer
-from .services import creates_user, get_by_username, update_user, update_user_plan
-from rest_framework.permissions import AllowAny, IsAdminUser
-from rest_framework_simplejwt.views import TokenObtainPairView
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import SearchFilter
-from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.permissions import AllowAny, IsAdminUser
+from rest_framework.views import APIView, Response, status
+from rest_framework_simplejwt.views import TokenObtainPairView
 
+from plans.models import Plan
 
 from .models import User
-from plans.models import Plan
+from .serializers import MyTokenSerializer, UpdateUserSerializer, UserSerializer
+from .services import creates_user, get_by_username, update_user, update_user_plan
 
 # Create your views here.
 

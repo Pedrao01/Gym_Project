@@ -1,8 +1,10 @@
+from unittest.mock import patch
+
 import pytest
-from users.services import get_by_username, creates_user, update_user, update_user_plan
 from django.core.exceptions import ValidationError
 from django.http import Http404
-from unittest.mock import patch
+
+from users.services import creates_user, get_by_username, update_user, update_user_plan
 
 
 def test_get_user_by_username_function(valid_user):

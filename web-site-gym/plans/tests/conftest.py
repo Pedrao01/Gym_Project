@@ -1,8 +1,9 @@
-import pytest
-
 from datetime import date
+
+import pytest
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
+
 from plans.models import Plan
 
 

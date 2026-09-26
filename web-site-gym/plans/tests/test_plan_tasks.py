@@ -1,6 +1,7 @@
-from plans.tasks import check_expired_plans
-from django.utils import timezone
 from dateutil.relativedelta import relativedelta
+from django.utils import timezone
+
+from plans.tasks import check_expired_plans
 
 
 def test_check_expired_plans_search_for_invalid_dates_and_render_the_plan_invalid(
