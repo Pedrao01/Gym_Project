@@ -14,8 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name="plan",
             name="expected_payment",
-            field=models.DateField(
-                blank=True, default=django.utils.timezone.localdate, null=True
-            ),
+            field=models.DateField(blank=True, default=django.utils.timezone.localdate, null=True),
         ),
     ]
