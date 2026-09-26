@@ -6,17 +6,17 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("plans", "0006_canceledplans"),
+        ('plans', '0006_canceledplans'),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name="plan",
-            name="status",
+            model_name='plan',
+            name='status',
         ),
         migrations.AddField(
-            model_name="plan",
-            name="is_active",
-            field=models.BooleanField(default=True, verbose_name="Ativo"),
+            model_name='plan',
+            name='is_active',
+            field=models.BooleanField(default=True, verbose_name='Ativo'),
         ),
     ]

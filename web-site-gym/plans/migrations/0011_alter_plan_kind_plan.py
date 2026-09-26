@@ -6,21 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("plans", "0010_plan_is_valid"),
+        ('plans', '0010_plan_is_valid'),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name="plan",
-            name="kind_plan",
-            field=models.CharField(
-                choices=[
-                    ("mensal", "Mensal"),
-                    ("trimestal", "Trimestral"),
-                    ("anual", "Anual"),
-                ],
-                default="pendente",
-                max_length=15,
-            ),
+            model_name='plan',
+            name='kind_plan',
+            field=models.CharField(choices=[('mensal', 'Mensal'), ('trimestal', 'Trimestral'), ('anual', 'Anual')], default='pendente', max_length=15),
         ),
     ]
