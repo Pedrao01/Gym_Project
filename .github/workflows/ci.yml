@@ -46,7 +46,8 @@ jobs:
 
       - name: spin up the database using docker-compose
         working-directory: web-site-gym
-        run: docker compose up -d db
+        run: |
+          docker compose up -d db gym-web
 
       - name: Wait for the database to be finished
         working-directory: web-site-gym
