@@ -39,6 +39,9 @@ jobs:
           DJANGO_SETTINGS_MODULE=${{ vars.DJANGO_SETTINGS_MODULE }}
           SECRET_KEY=${{ secrets.SECRET_KEY }}
           DEBUG=${{ vars.DEBUG }}
+          ALLOWED_HOSTS=${{ vars.ALLOWED_HOSTS }}
+          CORS_ALLOWED_ORIGINS=${{ vars.CORS_ALLOWED_ORIGINS }}
+          BACK_URL=${{ vars.BACK_URL }}
 
       - name: spin up the database using docker-compose
         working-directory: web-site-gym
