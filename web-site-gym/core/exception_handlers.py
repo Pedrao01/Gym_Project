@@ -13,6 +13,4 @@ def custom_exception_handler(exc, context):
         return response
 
     logger.exception("Unhandled error in %s", context["view"].__class__.__name__)
-    return Response(
-        {"Error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR
-    )
+    return Response({"Error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

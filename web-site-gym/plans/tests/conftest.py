@@ -50,9 +50,7 @@ def valid_plan_but_with_invalid_date(db, valid_user):
 def payment_mock_valid(valid_user, valid_plan):
     return {
         "status": "approved",
-        "additional_info": {
-            "items": [{"id": str(valid_user.id), "category_id": valid_plan.kind_plan}]
-        },
+        "additional_info": {"items": [{"id": str(valid_user.id), "category_id": valid_plan.kind_plan}]},
     }
 
 
@@ -63,15 +61,9 @@ def five_plans_with_invalid_date(db, create_five_users):
     for i in range(5):
         plan = Plan.objects.create(
             user=create_five_users[i],
-<<<<<<< HEAD
-            kind_plan='mensal',
-            payment_id=f'12345{i}',
-            expected_payment=timezone.now().date() - relativedelta(months=1)
-=======
-            kind_plan=f"mensal",
+            kind_plan="mensal",
             payment_id=f"12345{i}",
             expected_payment=timezone.now().date() - relativedelta(months=1),
->>>>>>> feat/pipeline_CI
         )
 
         plans.append(plan)

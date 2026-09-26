@@ -16,15 +16,11 @@ class Plan(models.Model):
         PENDING = "pendente", "Pendente"
         CANCELLED = "cancelado", "Cancelado"
 
-    kind_plan = models.CharField(
-        max_length=15, choices=KindPlan.choices, null=False, default="pendente"
-    )
+    kind_plan = models.CharField(max_length=15, choices=KindPlan.choices, null=False, default="pendente")
     is_valid = models.BooleanField(default=True, verbose_name="Valido")
     is_active = models.BooleanField(default=True, verbose_name="Ativo")
     create_at = models.DateField(auto_now_add=True)
-    expected_payment = models.DateField(
-        blank=True, null=True, default=timezone.localdate
-    )
+    expected_payment = models.DateField(blank=True, null=True, default=timezone.localdate)
     payment_id = models.CharField(max_length=20, unique=True, null=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="plan")

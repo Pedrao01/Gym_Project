@@ -13,9 +13,7 @@ class TestCreateUser:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_return_400_when_try_create_user_with_existing_credentials(
-        self, db, client, valid_user
-    ):
+    def test_return_400_when_try_create_user_with_existing_credentials(self, db, client, valid_user):
         payload = {
             "username": "pedro",
             "email": "pedro@gmail.com",
@@ -27,18 +25,14 @@ class TestCreateUser:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_return_201_when_user_created_successful(
-        self, db, api_client, payload_valid_user
-    ):
+    def test_return_201_when_user_created_successful(self, db, api_client, payload_valid_user):
 
         response = api_client.post(self.url, payload_valid_user, format="json")
 
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["email"] == payload_valid_user["email"]
 
-    def test_return_error_when_password_has_less_then_8_characters(
-        self, db, api_client
-    ):
+    def test_return_error_when_password_has_less_then_8_characters(self, db, api_client):
         payload = {
             "username": "manel",
             "email": "manel@gmail.com",
@@ -65,9 +59,7 @@ class TestLogin:
         assert "access" in response.data
         assert "refresh" in response.data
 
-    def test_verify_if_access_token_has_credentials(
-        self, valid_user, api_client, return_jwt_decoded
-    ):
+    def test_verify_if_access_token_has_credentials(self, valid_user, api_client, return_jwt_decoded):
         payload = {"username": "pedro", "password": "pedro123"}
 
         response = api_client.post(self.url, payload, format="json")
@@ -97,9 +89,7 @@ class TestLogin:
 class TestUser:
     url = reverse("user")
 
-    def test_return_200_when_find_user_and_return_valid_credentials(
-        self, authenticated_client
-    ):
+    def test_return_200_when_find_user_and_return_valid_credentials(self, authenticated_client):
 
         response = authenticated_client.get(self.url)
 
@@ -109,9 +99,7 @@ class TestUser:
         assert "phone_number" in response.data
         assert "password" not in response.data
 
-    def test_return_400_when_invalid_credentials(
-        self, authenticated_client, valid_user_1
-    ):
+    def test_return_400_when_invalid_credentials(self, authenticated_client, valid_user_1):
         payload = {
             "username": "manel",
             "email": "pedro@gmail.com",
@@ -122,9 +110,7 @@ class TestUser:
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
-    def test_return_of_method_patch_when_updated_successful(
-        self, authenticated_client, valid_user
-    ):
+    def test_return_of_method_patch_when_updated_successful(self, authenticated_client, valid_user):
 
         data = {
             "username": "pedro",
@@ -144,9 +130,7 @@ class TestUser:
 class TestStats:
     url = reverse("admin-stats")
 
-    def test_return_total_users_with_plan_without_plan(
-        self, authenticated_admin, create_five_plans
-    ):
+    def test_return_total_users_with_plan_without_plan(self, authenticated_admin, create_five_plans):
 
         response = authenticated_admin.get(self.url)
 
@@ -158,9 +142,7 @@ class TestStats:
 
         assert response.data["total"] == len(Plan.objects.all())
         assert response.data["with_plan"] == len(Plan.objects.filter(is_active=True))
-        assert response.data["without_plan"] == len(
-            Plan.objects.filter(is_active=False)
-        )
+        assert response.data["without_plan"] == len(Plan.objects.filter(is_active=False))
 
     def test_return_403_when_not_is_admin(self, authenticated_client):
 
@@ -172,9 +154,7 @@ class TestStats:
 class TestListUsers:
     url = reverse("list-users")
 
-    def test_pagination_structure(
-        self, authenticated_admin, create_five_users, create_five_plans
-    ):
+    def test_pagination_structure(self, authenticated_admin, create_five_users, create_five_plans):
 
         response = authenticated_admin.get(self.url)
 
@@ -210,9 +190,7 @@ class TestListUsers:
         for user in response.data["results"]:
             assert user["plan"] is not None
 
-    def test_return_403_when_user_not_is_admin(
-        self, authenticated_client, create_five_plans
-    ):
+    def test_return_403_when_user_not_is_admin(self, authenticated_client, create_five_plans):
 
         response = authenticated_client.get(self.url)
 
@@ -226,9 +204,7 @@ class TestListUsers:
 
     def test_return_specific_user(self, authenticated_admin, valid_user, valid_plan):
 
-        response = authenticated_admin.get(
-            self.url, data={"search": "pedro"}, format="json"
-        )
+        response = authenticated_admin.get(self.url, data={"search": "pedro"}, format="json")
 
         fields = ["id", "username", "email", "phone_number", "plan", "is_staff"]
 
@@ -238,9 +214,7 @@ class TestListUsers:
 
 class TestUpdatePlanUser:
 
-    def test_when_update_plan_is_successful(
-        self, authenticated_admin, valid_user, valid_plan
-    ):
+    def test_when_update_plan_is_successful(self, authenticated_admin, valid_user, valid_plan):
         url = reverse("update-plan-user", kwargs={"user_id": valid_user.id})
 
         response = authenticated_admin.patch(url, {"is_active": False}, format="json")
@@ -250,9 +224,7 @@ class TestUpdatePlanUser:
         valid_plan.refresh_from_db()
         assert valid_plan.is_active is False
 
-    def test_response_contains_expected_fields(
-        self, authenticated_admin, valid_user, valid_plan
-    ):
+    def test_response_contains_expected_fields(self, authenticated_admin, valid_user, valid_plan):
         url = reverse("update-plan-user", kwargs={"user_id": valid_user.id})
 
         response = authenticated_admin.patch(url, {"is_active": False}, format="json")
@@ -270,14 +242,10 @@ class TestUpdatePlanUser:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in response.data
 
-    def test_when_is_active_is_not_bool(
-        self, authenticated_admin, valid_user, valid_plan
-    ):
+    def test_when_is_active_is_not_bool(self, authenticated_admin, valid_user, valid_plan):
         url = reverse("update-plan-user", kwargs={"user_id": valid_user.id})
 
-        response = authenticated_admin.patch(
-            url, {"is_active": "string"}, format="json"
-        )
+        response = authenticated_admin.patch(url, {"is_active": "string"}, format="json")
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert "error" in response.data

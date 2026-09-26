@@ -42,9 +42,7 @@ def test_update_plan_next_payment(valid_plan_but_with_invalid_date, next_payment
     assert updated_plan.expected_payment == next_payment_data(base_date)
 
 
-def test_update_next_payment_when_expected_payment_is_none(
-    valid_user, inactive_plan, next_payment_data
-):
+def test_update_next_payment_when_expected_payment_is_none(valid_user, inactive_plan, next_payment_data):
     inactive_plan.expected_payment = None
     data = timezone.now().date()
 

@@ -8,9 +8,7 @@ class TestPaymentPlan:
 
     url = reverse("plan-payment")
 
-    def test_return_400_if_plan_is_active(
-        self, authenticated_client, valid_user, valid_plan
-    ):
+    def test_return_400_if_plan_is_active(self, authenticated_client, valid_user, valid_plan):
         response = authenticated_client.post(self.url, {}, format="json")
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -27,32 +25,22 @@ class TestPaymentConfirm:
         assert response.data == {"error": "PaymentId no provide"}
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_return_400_when_payment_user_differs_from_authenticated_user(
-        self, mock_mp, authenticated_client
-    ):
+    def test_return_400_when_payment_user_differs_from_authenticated_user(self, mock_mp, authenticated_client):
         mock_mp.return_value = {"additional_info": {"items": [{"id": "99999"}]}}
 
-        response = authenticated_client.post(
-            self.url, {"payment_id": "123456"}, format="json"
-        )
+        response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
-        assert response.data == {
-            "error": "The payment ID is not the same as the user ID"
-        }
+        assert response.data == {"error": "The payment ID is not the same as the user ID"}
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_return_400_when_payment_not_approved(
-        self, mock_mp, authenticated_client, valid_user
-    ):
+    def test_return_400_when_payment_not_approved(self, mock_mp, authenticated_client, valid_user):
         mock_mp.return_value = {
             "status": "failed",
             "additional_info": {"items": [{"id": str(valid_user.id)}]},
         }
 
-        response = authenticated_client.post(
-            self.url, {"payment_id": "123456"}, format="json"
-        )
+        response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
 
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data == {"error": "Invalid payment"}
@@ -66,9 +54,7 @@ class TestPaymentConfirm:
         valid_plan.payment_id = "123456"
         valid_plan.save()
 
-        response = authenticated_client.post(
-            self.url, {"payment_id": "123456"}, format="json"
-        )
+        response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
 
         assert response.status_code == status.HTTP_200_OK
         assert response.data == {
@@ -78,21 +64,13 @@ class TestPaymentConfirm:
         }
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_updates_plan_when_payment_id_is_new(
-        self, mock_mp, authenticated_client, valid_user, inactive_plan
-    ):
+    def test_updates_plan_when_payment_id_is_new(self, mock_mp, authenticated_client, valid_user, inactive_plan):
         mock_mp.return_value = {
             "status": "approved",
-            "additional_info": {
-                "items": [
-                    {"id": str(valid_user.id), "category_id": inactive_plan.kind_plan}
-                ]
-            },
+            "additional_info": {"items": [{"id": str(valid_user.id), "category_id": inactive_plan.kind_plan}]},
         }
 
-        response = authenticated_client.post(
-            self.url, {"payment_id": "999999"}, format="json"
-        )
+        response = authenticated_client.post(self.url, {"payment_id": "999999"}, format="json")
 
         inactive_plan.refresh_from_db()
 
@@ -106,21 +84,15 @@ class TestPaymentConfirm:
         }
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_creates_plan_when_user_has_no_plan(
-        self, mock_mp, authenticated_client, valid_user
-    ):
+    def test_creates_plan_when_user_has_no_plan(self, mock_mp, authenticated_client, valid_user):
         mock_mp.return_value = {
             "status": "approved",
-            "additional_info": {
-                "items": [{"id": str(valid_user.id), "category_id": "mensal"}]
-            },
+            "additional_info": {"items": [{"id": str(valid_user.id), "category_id": "mensal"}]},
         }
 
         assert not Plan.objects.filter(user=valid_user).exists()
 
-        response = authenticated_client.post(
-            self.url, {"payment_id": "123458"}, format="json"
-        )
+        response = authenticated_client.post(self.url, {"payment_id": "123458"}, format="json")
 
         plan = valid_user.plan
 
@@ -147,9 +119,7 @@ class TestPlanStatus:
 
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
-    def test_return_200_when_user_plan_is_valid(
-        self, authenticated_client, valid_user, valid_plan
-    ):
+    def test_return_200_when_user_plan_is_valid(self, authenticated_client, valid_user, valid_plan):
 
         response = authenticated_client.get(self.url, {}, format="json")
 
@@ -167,9 +137,7 @@ class TestPlanStatus:
         assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data == {"msg": "User does not have plan"}
 
-    def test_return_400_when_user_plan_is_invalid(
-        self, authenticated_client, valid_user, invalid_plan
-    ):
+    def test_return_400_when_user_plan_is_invalid(self, authenticated_client, valid_user, invalid_plan):
 
         response = authenticated_client.get(self.url, {}, format="json")
 
@@ -179,9 +147,7 @@ class TestPlanStatus:
 class TestCancelPlan:
     url = reverse("plan-cancel")
 
-    def test_return_500_when_cancel_plan_function_return_none(
-        self, authenticated_client, valid_user, valid_plan
-    ):
+    def test_return_500_when_cancel_plan_function_return_none(self, authenticated_client, valid_user, valid_plan):
         valid_plan.expected_payment = None
 
         response = authenticated_client.post(self.url, {}, format="json")
@@ -189,9 +155,7 @@ class TestCancelPlan:
         assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
         assert response.data == {"error": "Internal server error"}
 
-    def test_return_200_when_successful_in_plan_cancel(
-        self, authenticated_client, valid_user, valid_plan
-    ):
+    def test_return_200_when_successful_in_plan_cancel(self, authenticated_client, valid_user, valid_plan):
 
         response = authenticated_client.post(self.url, {}, format="json")
 

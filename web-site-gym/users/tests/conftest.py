@@ -44,9 +44,7 @@ def create_five_plans(db, create_five_users):
     plans = []
 
     for i in range(5):
-        plan = Plan.objects.create(
-            user=create_five_users[i], kind_plan="mensal", payment_id=f"123456{i}"
-        )
+        plan = Plan.objects.create(user=create_five_users[i], kind_plan="mensal", payment_id=f"123456{i}")
 
         plans.append(plan)
 

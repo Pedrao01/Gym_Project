@@ -23,9 +23,7 @@ class CreateUserViews(APIView):
         serializer = UserSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response(
-                {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
         try:
             user = creates_user(**serializer.validated_data)
@@ -50,17 +48,13 @@ class UserView(APIView):
     def patch(self, request) -> Response:
         user = request.user
 
-        serializer = UpdateUserSerializer(
-            instance=user, data=request.data, partial=True
-        )
+        serializer = UpdateUserSerializer(instance=user, data=request.data, partial=True)
 
         if serializer.is_valid():
             update_user(user, **serializer.validated_data)
             return Response({}, status=status.HTTP_200_OK)
 
-        return Response(
-            {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
-        )
+        return Response({"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  Rota: gym/login/
@@ -90,11 +84,7 @@ class ListUsersView(generics.ListAPIView):
     search_fields = ["username", "email", "phone_number"]
 
     def get_queryset(self):
-        queryset = (
-            User.objects.filter(plan__isnull=False)
-            .select_related("plan")
-            .order_by("id")
-        )
+        queryset = User.objects.filter(plan__isnull=False).select_related("plan").order_by("id")
 
         return queryset
 
@@ -109,9 +99,7 @@ class UpdatePlanUserView(generics.UpdateAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
         if not isinstance(request.data["is_active"], bool):
-            return Response(
-                {"error": "is_active must be bool"}, status=status.HTTP_400_BAD_REQUEST
-            )
+            return Response({"error": "is_active must be bool"}, status=status.HTTP_400_BAD_REQUEST)
 
         user = update_user_plan(kwargs["user_id"], request.data["is_active"])
         serializer = UserSerializer(user)

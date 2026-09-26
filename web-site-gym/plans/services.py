@@ -68,9 +68,7 @@ def create_plan(user: User, kind_plan: str, payment_id: str) -> Plan:
     number_months = PLANS.get(kind_plan).get("number_months")
 
     with transaction.atomic():
-        plan = Plan.objects.create(
-            user=user, kind_plan=kind_plan, payment_id=payment_id
-        )
+        plan = Plan.objects.create(user=user, kind_plan=kind_plan, payment_id=payment_id)
 
         new_plan = update_next_payment(plan, number_months)
 
