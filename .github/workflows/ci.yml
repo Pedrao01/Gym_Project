@@ -37,6 +37,7 @@ jobs:
           DB_HOST=${{ vars.DB_HOST  }}
           DB_PORT=${{ vars.DB_PORT }}
           DJANGO_SETTINGS_MODULE=${{ vars.DJANGO_SETTINGS_MODULE }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
 
       - name: spin up the database using docker-compose
         working-directory: web-site-gym
