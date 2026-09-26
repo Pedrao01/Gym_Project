@@ -74,7 +74,7 @@ jobs:
 
       - name: Run tests with coverage
         working-directory: web-site-gym
-        run: docker compose exec gym-web pytest --cov=. --cov-report=term-missing
+        run: pytest --cov=. --cov-report=term-missing
 
       - name: Knocks down the containers
         working-directory: web-site-gym
