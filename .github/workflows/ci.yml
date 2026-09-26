@@ -33,9 +33,10 @@ jobs:
           cat << EOF > .env
           DB_NAME=${{ vars.DB_NAME }}
           DB_USER=${{ vars.DB_USER }}
-          DB_PASSWORD={{ secrets.DB_PASSWORD }}
-          DB_HOST={{ vars.DB_HOST  }}
-          DB_PORT={{ vars.DB_PORT }}
+          DB_PASSWORD=${{ secrets.DB_PASSWORD }}
+          DB_HOST=${{ vars.DB_HOST  }}
+          DB_PORT=${{ vars.DB_PORT }}
+          DJANGO_SETTINGS_MODULE=${{ vars.DJANGO_SETTINGS_MODULE }}
 
       - name: spin up the database using docker-compose
         working-directory: web-site-gym
@@ -63,14 +64,10 @@ jobs:
       - name: Check migrations pending
         working-directory: web-site-gym
         run: python manage.py makemigrations --check --dry-run
-        env:
-          DJANGO_SETTINGS_MODULE: ${{ vars.DJANGO_SETTINGS_MODULE }}
 
       - name: Run tests with coverage
         working-directory: web-site-gym
         run: pytest --cov=. --cov-report=term-missing
-        env:
-          DJANGO_SETTINGS_MODULE: ${{ vars.DJANGO_SETTINGS_MODULE }}
 
       - name: Knocks down the containers
         working-directory: web-site-gym
