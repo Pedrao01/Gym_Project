@@ -6,4 +6,4 @@ class PlanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Plan
-        fields = ['id', 'kind_plan', 'is_active']
+        fields = ["id", "kind_plan", "is_active"]

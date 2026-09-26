@@ -1,4 +1,4 @@
 from .base import *
 
 DEBUG = True
-CELERY_WORKER_POOL = 'solo'
+CELERY_WORKER_POOL = "solo"

@@ -7,13 +7,15 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('plans', '0004_alter_plan_user'),
+        ("plans", "0004_alter_plan_user"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='plan',
-            name='expected_payment',
-            field=models.DateField(blank=True, default=django.utils.timezone.localdate, null=True),
+            model_name="plan",
+            name="expected_payment",
+            field=models.DateField(
+                blank=True, default=django.utils.timezone.localdate, null=True
+            ),
         ),
     ]

@@ -8,19 +8,34 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('plans', '0005_alter_plan_expected_payment'),
+        ("plans", "0005_alter_plan_expected_payment"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CanceledPlans',
+            name="CanceledPlans",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('old_plan_name', models.CharField(max_length=15)),
-                ('plan_is_valid', models.BooleanField(default=False)),
-                ('end_plan', models.DateField()),
-                ('user', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='canceledPlan', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("old_plan_name", models.CharField(max_length=15)),
+                ("plan_is_valid", models.BooleanField(default=False)),
+                ("end_plan", models.DateField()),
+                (
+                    "user",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="canceledPlan",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

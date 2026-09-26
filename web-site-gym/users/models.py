@@ -9,4 +9,4 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=11, blank=False, unique=True)
 
     def __str__(self):
-        return f'Username: {self.username} - Email: {self.email}'
+        return f"Username: {self.username} - Email: {self.email}"

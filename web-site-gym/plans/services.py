@@ -13,24 +13,26 @@ from decouple import config
 def create_preference(plan_id: str, user: User):
     sdk = get_sdk()
     plan = PLANS.get(plan_id)
-    back_url = config('BACK_URL')
+    back_url = config("BACK_URL")
 
     preference_data = {
-        "items": [{
-            "id": str(user.id),
-            "title": plan['title'],
-            "quantity": 1,
-            "currency_id": "BRL",
-            "unit_price": plan['unit_price'],
-            "description": plan['description'],
-            "category_id": plan_id
-        }, ],
+        "items": [
+            {
+                "id": str(user.id),
+                "title": plan["title"],
+                "quantity": 1,
+                "currency_id": "BRL",
+                "unit_price": plan["unit_price"],
+                "description": plan["description"],
+                "category_id": plan_id,
+            },
+        ],
         "back_urls": {
             "success": f"{back_url}/?status=approved",
             "failure": f"{back_url}/?status=failure",
             "pending": f"{back_url}/?status=pending",
         },
-        "auto_return": "all"
+        "auto_return": "all",
     }
 
     result = sdk.preference().create(preference_data)
@@ -44,7 +46,7 @@ def get_payment_mercadopago(payment_id: int) -> dict:
 
     request = sdk.payment().get(payment_id=payment_id)
 
-    return request['response']
+    return request["response"]
 
 
 def update_plan(user: User, plan_kind: str, payment_id):
@@ -54,22 +56,20 @@ def update_plan(user: User, plan_kind: str, payment_id):
             plan.is_active = True
             plan.is_valid = True
             plan.payment_id = payment_id
-            plan.save(update_fields=['is_active', 'is_valid',  'payment_id'])
+            plan.save(update_fields=["is_active", "is_valid", "payment_id"])
 
-            number_months = PLANS.get(plan_kind).get('number_months')
+            number_months = PLANS.get(plan_kind).get("number_months")
             plan = update_next_payment(plan, number_months)
 
         return plan
 
 
 def create_plan(user: User, kind_plan: str, payment_id: str) -> Plan:
-    number_months = PLANS.get(kind_plan).get('number_months')
+    number_months = PLANS.get(kind_plan).get("number_months")
 
     with transaction.atomic():
         plan = Plan.objects.create(
-            user=user,
-            kind_plan=kind_plan,
-            payment_id=payment_id
+            user=user, kind_plan=kind_plan, payment_id=payment_id
         )
 
         new_plan = update_next_payment(plan, number_months)
@@ -85,7 +85,7 @@ def update_next_payment(plan: Plan, plan_months: int):
     next_payment = data + relativedelta(months=plan_months)
 
     plan.expected_payment = next_payment
-    plan.save(update_fields=['expected_payment'])
+    plan.save(update_fields=["expected_payment"])
 
     return plan
 
@@ -99,7 +99,7 @@ def cancel_plan(user: User):
     if today_date <= plan.expected_payment:
         with transaction.atomic():
             plan.is_active = False
-            plan.save(update_fields=['is_active'])
+            plan.save(update_fields=["is_active"])
 
             return plan
 

@@ -23,18 +23,20 @@ class CreateUserViews(APIView):
         serializer = UserSerializer(data=request.data)
 
         if not serializer.is_valid():
-            return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             user = creates_user(**serializer.validated_data)
 
-            return Response({
-                'user_id': user.id,
-                'email': user.email
-            }, status=status.HTTP_201_CREATED)
+            return Response(
+                {"user_id": user.id, "email": user.email},
+                status=status.HTTP_201_CREATED,
+            )
 
         except ValidationError as e:
-            return Response({'errors': e.message}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"errors": e.message}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserView(APIView):
@@ -49,16 +51,16 @@ class UserView(APIView):
         user = request.user
 
         serializer = UpdateUserSerializer(
-            instance=user,
-            data=request.data,
-            partial=True
+            instance=user, data=request.data, partial=True
         )
 
         if serializer.is_valid():
             update_user(user, **serializer.validated_data)
             return Response({}, status=status.HTTP_200_OK)
 
-        return Response({'error': serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(
+            {"error": serializer.errors}, status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 #  Rota: gym/login/
@@ -75,21 +77,24 @@ class StatsView(APIView):
         with_plan = len(plans.filter(is_active=True))
         without_plan = len(plans.filter(is_active=False))
 
-        return Response({
-            'total': total,
-            'with_plan': with_plan,
-            'without_plan': without_plan
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {"total": total, "with_plan": with_plan, "without_plan": without_plan},
+            status=status.HTTP_200_OK,
+        )
 
 
 class ListUsersView(generics.ListAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAdminUser]
     filter_backends = [DjangoFilterBackend, SearchFilter]
-    search_fields = ['username', 'email', 'phone_number']
+    search_fields = ["username", "email", "phone_number"]
 
     def get_queryset(self):
-        queryset = User.objects.filter(plan__isnull=False).select_related('plan').order_by('id')
+        queryset = (
+            User.objects.filter(plan__isnull=False)
+            .select_related("plan")
+            .order_by("id")
+        )
 
         return queryset
 
@@ -98,13 +103,17 @@ class UpdatePlanUserView(generics.UpdateAPIView):
     permission_classes = [IsAdminUser]
 
     def patch(self, request, *args, **kwargs):
-        if 'is_active' not in request.data:
-            return Response({'error': "You must send 'is_active' in the body"},
-                            status=status.HTTP_400_BAD_REQUEST)
-        if not isinstance(request.data['is_active'], bool):
-            return Response({'error': 'is_active must be bool'}, status=status.HTTP_400_BAD_REQUEST)
+        if "is_active" not in request.data:
+            return Response(
+                {"error": "You must send 'is_active' in the body"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        if not isinstance(request.data["is_active"], bool):
+            return Response(
+                {"error": "is_active must be bool"}, status=status.HTTP_400_BAD_REQUEST
+            )
 
-        user = update_user_plan(kwargs['user_id'], request.data['is_active'])
+        user = update_user_plan(kwargs["user_id"], request.data["is_active"])
         serializer = UserSerializer(user)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
