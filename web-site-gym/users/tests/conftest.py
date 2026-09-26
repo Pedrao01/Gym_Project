@@ -6,10 +6,10 @@ from plans.models import Plan
 @pytest.fixture
 def payload_valid_user():
     return {
-        'username': 'manel',
-        'email': 'manel@gmail.com',
-        'phone_number': '74999458944',
-        'password': 'manel123'
+        "username": "manel",
+        "email": "manel@gmail.com",
+        "phone_number": "74999458944",
+        "password": "manel123",
     }
 
 
@@ -17,15 +17,16 @@ def payload_valid_user():
 def return_jwt_decoded():
     def _calc(access_token):
         return jwt.decode(access_token, options={"verify_signature": False})
+
     return _calc
 
 
 @pytest.fixture
 def admin_user(db, django_user_model):
     admin = django_user_model.objects.create_superuser(
-        username='cleber',
-        email='clebin@gmail.com',
-        password='123456',
+        username="cleber",
+        email="clebin@gmail.com",
+        password="123456",
     )
 
     return admin
@@ -44,9 +45,7 @@ def create_five_plans(db, create_five_users):
 
     for i in range(5):
         plan = Plan.objects.create(
-            user=create_five_users[i],
-            kind_plan='mensal',
-            payment_id=f'123456{i}'
+            user=create_five_users[i], kind_plan="mensal", payment_id=f"123456{i}"
         )
 
         plans.append(plan)

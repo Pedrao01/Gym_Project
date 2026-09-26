@@ -8,14 +8,18 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('plans', '0002_alter_plan_expected_payment'),
+        ("plans", "0002_alter_plan_expected_payment"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='plan',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.PROTECT, related_name='plan', to=settings.AUTH_USER_MODEL),
+            model_name="plan",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.PROTECT,
+                related_name="plan",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

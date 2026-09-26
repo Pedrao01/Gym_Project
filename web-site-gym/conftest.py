@@ -19,10 +19,10 @@ def authenticated_client(api_client, valid_user):
 @pytest.fixture
 def valid_user(db, django_user_model):
     return django_user_model.objects.create_user(
-        username='pedro',
-        email='pedro@gmail.com',
-        phone_number='74999668392',
-        password='pedro123'
+        username="pedro",
+        email="pedro@gmail.com",
+        phone_number="74999668392",
+        password="pedro123",
     )
 
 
@@ -30,18 +30,18 @@ def valid_user(db, django_user_model):
 def valid_plan(db, valid_user):
     return Plan.objects.create(
         user=valid_user,
-        kind_plan='mensal',
-        expected_payment=timezone.now().date() + relativedelta(months=1)
+        kind_plan="mensal",
+        expected_payment=timezone.now().date() + relativedelta(months=1),
     )
 
 
 @pytest.fixture
 def valid_user_1(db, django_user_model):
     return django_user_model.objects.create_user(
-        username='manel',
-        email='manel@gmail.com',
-        phone_number='74999873645',
-        password='manel123'
+        username="manel",
+        email="manel@gmail.com",
+        phone_number="74999873645",
+        password="manel123",
     )
 
 
@@ -51,10 +51,10 @@ def create_five_users(db, django_user_model):
 
     for i in range(5):
         user = django_user_model.objects.create(
-            username=f'user{i}',
-            email=f'user{i}@gmail.com',
-            phone_number=f'7499912345{i}',
-            password='12345678'
+            username=f"user{i}",
+            email=f"user{i}@gmail.com",
+            phone_number=f"7499912345{i}",
+            password="12345678",
         )
         users.append(user)
 

@@ -15,14 +15,51 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Plan',
+            name="Plan",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('kind_plan', models.CharField(choices=[('mensal', 'Trimestal'), ('trimestal', 'Trimestral'), ('anual', 'Anual')], default='pendente', max_length=15)),
-                ('status', models.CharField(choices=[('ativo', 'Ativo'), ('pendente', 'Pendente'), ('cancelado', 'Cancelado')], default='pendente', max_length=15)),
-                ('create_at', models.DateField(auto_now_add=True)),
-                ('expected_payment', models.DateField(blank=True, null=True)),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='plan', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                (
+                    "kind_plan",
+                    models.CharField(
+                        choices=[
+                            ("mensal", "Trimestal"),
+                            ("trimestal", "Trimestral"),
+                            ("anual", "Anual"),
+                        ],
+                        default="pendente",
+                        max_length=15,
+                    ),
+                ),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("ativo", "Ativo"),
+                            ("pendente", "Pendente"),
+                            ("cancelado", "Cancelado"),
+                        ],
+                        default="pendente",
+                        max_length=15,
+                    ),
+                ),
+                ("create_at", models.DateField(auto_now_add=True)),
+                ("expected_payment", models.DateField(blank=True, null=True)),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="plan",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
     ]

@@ -6,13 +6,13 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('plans', '0009_remove_plan_last_payment_plan_payment_id'),
+        ("plans", "0009_remove_plan_last_payment_plan_payment_id"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='plan',
-            name='is_valid',
-            field=models.BooleanField(default=True, verbose_name='Valido'),
+            model_name="plan",
+            name="is_valid",
+            field=models.BooleanField(default=True, verbose_name="Valido"),
         ),
     ]

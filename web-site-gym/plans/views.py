@@ -1,11 +1,19 @@
 from rest_framework.views import APIView, Response, status
 from django.core.exceptions import ObjectDoesNotExist
 from .services import (
+<<<<<<< HEAD
     create_preference, create_plan, cancel_plan, user_plan_is_active, update_plan, get_payment_mercadopago
+=======
+    create_preference,
+    create_plan,
+    cancel_plan,
+    user_plan_is_active,
+    update_plan,
+    get_payment_mercadopago,
+>>>>>>> feat/pipeline_CI
 )
 
 from .models import Plan
-
 
 # Create your views here.
 
@@ -19,8 +27,7 @@ class PlanView(APIView):
 
         if user_plan_is_active(user):
             return Response(
-                {'error': '❌ Plano já está ativo.'},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "❌ Plano já está ativo."}, status=status.HTTP_400_BAD_REQUEST
             )
 
         else:
@@ -32,56 +39,63 @@ class PlanView(APIView):
 #  Rota: /gym/payments/confirm/
 class PaymentConfirmView(APIView):
     def post(self, request) -> Response:
-        payment_id = request.data.get('payment_id')
+        payment_id = request.data.get("payment_id")
         if not payment_id or payment_id is None:
             return Response(
-                {'error': 'PaymentId no provide'},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "PaymentId no provide"}, status=status.HTTP_400_BAD_REQUEST
             )
         payment = get_payment_mercadopago(int(payment_id))
 
         user = request.user
-        payment_user_id = payment['additional_info']['items'][0]['id']
+        payment_user_id = payment["additional_info"]["items"][0]["id"]
         if payment_user_id != str(user.id):
             return Response(
-                {'error': 'The payment ID is not the same as the user ID'},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "The payment ID is not the same as the user ID"},
+                status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if payment['status'] != 'approved':
+        if payment["status"] != "approved":
             return Response(
-                {'error': 'Invalid payment'},
-                status=status.HTTP_400_BAD_REQUEST
+                {"error": "Invalid payment"}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        plan_kind = payment['additional_info']['items'][0]['category_id']
+        plan_kind = payment["additional_info"]["items"][0]["category_id"]
 
         try:
             plan = Plan.objects.get(payment_id=payment_id)
-            return Response({
-                'plan_name': plan.kind_plan,
-                'expires_at': plan.expected_payment,
-                'is_active': plan.is_active
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "plan_name": plan.kind_plan,
+                    "expires_at": plan.expected_payment,
+                    "is_active": plan.is_active,
+                },
+                status=status.HTTP_200_OK,
+            )
 
         except ObjectDoesNotExist:
 
             if Plan.objects.filter(user=user).exists():
                 plan = update_plan(user, plan_kind, payment_id)
 
-                return Response({
-                    'plan_name': plan.kind_plan,
-                    'expires_at': plan.expected_payment,
-                    'is_active': plan.is_active
-                }, status=status.HTTP_200_OK)
+                return Response(
+                    {
+                        "plan_name": plan.kind_plan,
+                        "expires_at": plan.expected_payment,
+                        "is_active": plan.is_active,
+                    },
+                    status=status.HTTP_200_OK,
+                )
 
             plan = create_plan(user, plan_kind, payment_id)
 
-            return Response({
-                'plan_name': plan.kind_plan,
-                'expires_at': plan.expected_payment,
-                'is_active': plan.is_active
-            }, status=status.HTTP_200_OK)
+            return Response(
+                {
+                    "plan_name": plan.kind_plan,
+                    "expires_at": plan.expected_payment,
+                    "is_active": plan.is_active,
+                },
+                status=status.HTTP_200_OK,
+            )
 
 
 #  Route: /gym/payments/status/
@@ -93,18 +107,22 @@ class PlanStatusView(APIView):
             user_plan = user.plan
 
             if not user_plan.is_valid:
-                return Response({'msg': 'The user plan is invalid'},
-                                status=status.HTTP_400_BAD_REQUEST)
-            return Response({
-                'plan_name': user_plan.kind_plan,
-                'expires_at': user_plan.expected_payment,
-                'is_active': user_plan.is_active
-            }, status=status.HTTP_200_OK)
+                return Response(
+                    {"msg": "The user plan is invalid"},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            return Response(
+                {
+                    "plan_name": user_plan.kind_plan,
+                    "expires_at": user_plan.expected_payment,
+                    "is_active": user_plan.is_active,
+                },
+                status=status.HTTP_200_OK,
+            )
 
         except ObjectDoesNotExist:
             return Response(
-                {'msg': 'User does not have plan'},
-                status=status.HTTP_400_BAD_REQUEST
+                {"msg": "User does not have plan"}, status=status.HTTP_400_BAD_REQUEST
             )
 
 
@@ -116,12 +134,15 @@ class PlanCancelView(APIView):
 
         if plan is None:
             return Response(
-                {'error': 'Internal server error'},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                {"error": "Internal server error"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-        return Response({
-            'plan_name': plan.kind_plan,
-            'expires_at': plan.expected_payment,
-            'is_active': plan.is_active
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "plan_name": plan.kind_plan,
+                "expires_at": plan.expected_payment,
+                "is_active": plan.is_active,
+            },
+            status=status.HTTP_200_OK,
+        )

@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from .models import User
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer, AuthUser, Token
+from rest_framework_simplejwt.serializers import (
+    TokenObtainPairSerializer,
+    AuthUser,
+    Token,
+)
 from plans.serializers import PlanSerializer
 
 
@@ -10,16 +14,22 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'phone_number', 'password', 'plan', 'is_staff']
-        extra_kwargs = {
-            'is_staff': {'read_only': True}
-        }
+        fields = [
+            "id",
+            "username",
+            "email",
+            "phone_number",
+            "password",
+            "plan",
+            "is_staff",
+        ]
+        extra_kwargs = {"is_staff": {"read_only": True}}
 
 
 class UpdateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'phone_number']
+        fields = ["username", "email", "phone_number"]
 
 
 class MyTokenSerializer(TokenObtainPairSerializer):
@@ -28,6 +38,6 @@ class MyTokenSerializer(TokenObtainPairSerializer):
 
         token = super().get_token(user)
 
-        token['is_staff'] = user.is_staff
+        token["is_staff"] = user.is_staff
 
         return token
