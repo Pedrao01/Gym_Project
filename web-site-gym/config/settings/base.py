@@ -172,8 +172,4 @@ CELERY_BEAT_SCHEDULE = {
     }
 }
 
-sentry_sdk.init(
-    dsn=config('SENTRY_DSN'),
-    send_default_pii=True,
-    traces_sample_rate=1.0
-)
+sentry_sdk.init(dsn=config("SENTRY_DSN"), send_default_pii=True, traces_sample_rate=1.0)
