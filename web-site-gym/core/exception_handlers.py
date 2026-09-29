@@ -1,10 +1,9 @@
 import logging
 
+import sentry_sdk
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
-
-import sentry_sdk
 
 logger = logging.getLogger(__name__)
 
