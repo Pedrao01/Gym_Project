@@ -22,7 +22,7 @@ services:
 
   gym-web:
     image: web-site-gym:latest
-    container_name: web-site-gym
+    container_name: gym-web
     expose:
       - "8000"
     depends_on:
