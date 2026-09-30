@@ -1,5 +1,6 @@
 import logging
 
+import sentry_sdk
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import exception_handler
@@ -14,4 +15,6 @@ def custom_exception_handler(exc, context):
         return response
 
     logger.exception("Unhandled error in %s", context["view"].__class__.__name__)
+    sentry_sdk.capture_exception(exc)
+
     return Response({"Error": "Internal server error"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

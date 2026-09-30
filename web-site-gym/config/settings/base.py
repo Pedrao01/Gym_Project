@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 
+import sentry_sdk
 from celery.schedules import crontab
 from decouple import Csv, config
 
@@ -170,3 +171,5 @@ CELERY_BEAT_SCHEDULE = {
         "schedule": crontab(minute="0", hour="0"),
     }
 }
+
+sentry_sdk.init(dsn=config("SENTRY_DSN"), send_default_pii=True, traces_sample_rate=1.0)
