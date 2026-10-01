@@ -44,6 +44,7 @@ jobs:
           BACK_URL=${{ vars.BACK_URL }}
           MERCADOPAGO_ACCESS_TOKEN=${{ secrets.MERCADOPAGO_ACCESS_TOKEN }}
           SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+          EOF
 
       - name: spin up the database using docker-compose
         working-directory: web-site-gym
