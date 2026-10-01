@@ -1,4 +1,5 @@
 from decouple import config
+import sentry_sdk
 
 from .base import *  # noqa: F401, 403
 
@@ -12,3 +13,5 @@ SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 SECURE_HSTS_SECONDS = 31536000
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+sentry_sdk.init(config("SENTRY_DSN"), send_default_pii=True, traces_sample_rate=0.1)
