@@ -27,7 +27,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Create the .env file from the secrets and varibles
+      - name: Create the .env file from the secrets and variables
         working-directory: web-site-gym
         run: |
           cat << EOF > .env
