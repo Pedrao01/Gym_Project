@@ -1,5 +1,5 @@
-from decouple import config
 import sentry_sdk
+from decouple import config
 
 from .base import *  # noqa: F401, 403
 
