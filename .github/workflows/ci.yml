@@ -59,10 +59,6 @@ jobs:
             sleep 1
           done
 
-      - name: Install linting tools
-        working-directory: web-site-gym
-        run: pip install flake8 black isort
-
       - name: Run lint and formatting
         working-directory: web-site-gym
         run: |
