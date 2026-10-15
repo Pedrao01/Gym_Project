@@ -106,5 +106,5 @@ jobs:
           context: web-site-gym/.
           push: true
           tags: |
-            ghcr.io/${{ lowercase(github.repository) }}:latest
-            ghcr.io/${{ lowercase(github.repository) }}:${{ github.sha }}
+            ghcr.io/${{ lower(github.repository) }}:latest
+            ghcr.io/${{ lower(github.repository) }}:${{ github.sha }}
