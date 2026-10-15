@@ -100,11 +100,14 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set lowercase image name
+        run: echo "IMAGE_NAME=${{ github.repository }}" >> "$GITHUB_ENV"
+
       - name: Build and Push
         uses: docker/build-push-action@v7
         with:
           context: web-site-gym/.
           push: true
           tags: |
-            ghcr.io/${{ lower(github.repository) }}:latest
-            ghcr.io/${{ lower(github.repository) }}:${{ github.sha }}
+            ghcr.io/${{ env.IMAGE_NAME }}:latest
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ github.sha }}
