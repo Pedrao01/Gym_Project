@@ -121,4 +121,4 @@ jobs:
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
           tags: |
-            ghcr.io/${{ env.IMAGE_NAME }}/frontend:latest
+            ghcr.io/${{ env.IMAGE_NAME }}-frontend:latest
