@@ -116,7 +116,7 @@ jobs:
         uses: docker/build-push-action@v7
         with:
           context: ./gym-frontend
-          file: ./gym-frontend/dockerfile
+          file: ./gym-frontend/Dockerfile
           push: true
           build-args: |
             VITE_API_URL=${{ vars.VITE_API_URL }}
