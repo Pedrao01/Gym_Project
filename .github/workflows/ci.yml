@@ -115,7 +115,7 @@ jobs:
       - name: Build and push frontend
         uses: docker/build-push-action@v7
         with:
-          context: gym-frontend/.
+          context: ./gym-frontend
           file: ./gym-frontend/dockerfile
           push: true
           build-args: |
