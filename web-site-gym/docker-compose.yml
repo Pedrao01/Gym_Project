@@ -21,7 +21,7 @@ services:
       - redis_data:/data
 
   gym-web:
-    image: ghcr.io/pedrao01/gym_project:361a5d0777af433da7635450b9c3eca40f751277
+    image: web-site-gym:latest
     container_name: gym-web
     expose:
       - "8000"
@@ -36,7 +36,7 @@ services:
     env_file: .env
 
   migretion:
-    image: ghcr.io/pedrao01/gym_project:361a5d0777af433da7635450b9c3eca40f751277
+    image: web-site-gym:latest
     command: python manage.py migrate
     depends_on:
       db:
@@ -44,7 +44,7 @@ services:
     env_file: .env
 
   collectstatic:
-    image: ghcr.io/pedrao01/gym_project:361a5d0777af433da7635450b9c3eca40f751277
+    image: web-site-gym:latest
     command: python manage.py collectstatic --noinput
     volumes:
       - static_volume:/app/staticfiles
@@ -52,7 +52,7 @@ services:
     env_file: .env
 
   celery-beat:
-    image: ghcr.io/pedrao01/gym_project:361a5d0777af433da7635450b9c3eca40f751277
+    image: web-site-gym:latest
     container_name: celery-beat-gym
     command: celery -A config beat --loglevel=info
     depends_on:
@@ -65,7 +65,7 @@ services:
     env_file: .env
 
   celery-work:
-    image: ghcr.io/pedrao01/gym_project:361a5d0777af433da7635450b9c3eca40f751277
+    image: web-site-gym:latest
     container_name: celery-work-gym
     command: celery -A config worker --loglevel=info
     depends_on:
@@ -96,7 +96,7 @@ services:
         condition: service_completed_successfully
 
   frontend-builder:
-    image: ghcr.io/pedrao01/gym_project-frontend:latest
+    build: ../gym-frontend
     volumes:
       - frontend_dist:/app/dist
 
