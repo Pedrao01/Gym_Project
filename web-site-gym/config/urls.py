@@ -30,7 +30,7 @@ from users.views import (
 )
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path("gym/admin/", admin.site.urls),
     path("gym/create-user/", CreateUserViews.as_view(), name="user-create"),
     path("gym/user/", UserView.as_view(), name="user"),
     path("gym/login/", MyTokenObtainPairView.as_view(), name="login"),
