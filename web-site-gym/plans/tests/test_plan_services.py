@@ -13,25 +13,23 @@ from plans.services import (
 def test_plan_create_successful(valid_user, next_payment_data):
     today = timezone.now().date()
 
-    plan = create_plan(user=valid_user, kind_plan="mensal", payment_id="123456")
+    plan = create_plan(user=valid_user, kind_plan="mensal")
 
     assert plan.is_active is True
     assert plan.is_valid is True
     assert plan.user == valid_user
     assert plan.kind_plan == "mensal"
-    assert plan.payment_id == "123456"
     assert plan.expected_payment == next_payment_data(today)
 
 
 def test_update_plan_when_is_not_active(valid_user, inactive_plan, next_payment_data):
     base_date = inactive_plan.expected_payment
 
-    updated_plan = update_plan(user=valid_user, plan_kind="mensal", payment_id="123457")
+    updated_plan = update_plan(user=valid_user, plan_kind="mensal")
 
     assert updated_plan.user == valid_user
     assert updated_plan.expected_payment == next_payment_data(base_date)
     assert updated_plan.is_active is True
-    assert updated_plan.payment_id == "123457"
 
 
 def test_update_plan_next_payment(valid_plan_but_with_invalid_date, next_payment_data):

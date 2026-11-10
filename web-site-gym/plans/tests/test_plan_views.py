@@ -1,13 +1,11 @@
 from datetime import timedelta
-from dateutil import relativedelta
-from django.utils import timezone
 from unittest.mock import patch
 
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
-from plans.models import Plan
-
+from plans.models import Payment, Plan
 from plans.tasks import check_expired_plans
 
 
@@ -54,17 +52,20 @@ class TestPaymentConfirm:
 
     @patch("plans.views.get_payment_mercadopago")
     def test_return_200_when_plan_already_exists_with_same_payment_id(
-        self, mock_mp, authenticated_client, payment_mock_valid, valid_plan
+        self,
+        mock_mp,
+        authenticated_client,
+        payment_mock_valid,
+        valid_plan,
+        valid_payment,
     ):
         mock_mp.return_value = payment_mock_valid
 
-        valid_plan.payment_id = "123456"
-        valid_plan.save()
-
         response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
 
-        assert response.status_code == status.HTTP_200_OK
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
         assert response.data == {
+            "code": "payment_already_used",
             "plan_name": valid_plan.kind_plan,
             "expires_at": valid_plan.expected_payment,
             "is_active": valid_plan.is_valid,
@@ -82,7 +83,6 @@ class TestPaymentConfirm:
         inactive_plan.refresh_from_db()
 
         assert response.status_code == status.HTTP_200_OK
-        assert inactive_plan.payment_id == "999999"
         assert inactive_plan.is_active is True
         assert response.data == {
             "plan_name": inactive_plan.kind_plan,
@@ -91,43 +91,75 @@ class TestPaymentConfirm:
         }
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_when_user_send_a_payment_id_already_used(self, mock_mp, authenticated_client, valid_user):
-        mock_mp.return_value = {
-            "status": "approved",
-            "additional_info": {"items": [{"id": str(valid_user.id), "category_id": "mensal"}]},
-        }
+    def test_old_payment_id_after_renewal_does_not_reactivate(
+        self,
+        mock_mp,
+        authenticated_client,
+        valid_user,
+        payment_mock_valid,
+    ):
+        mock_mp.return_value = payment_mock_valid
 
         response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
         assert response.status_code == status.HTTP_200_OK
         Plan.objects.filter(user=valid_user).update(
-            expected_payment=timezone.localdate() - timedelta(days=1)
+            expected_payment=timezone.localdate() - timedelta(days=1),
         )
         check_expired_plans()
 
         response = authenticated_client.post(self.url, {"payment_id": "999999"}, format="json")
-        assert response.data['is_active'] is True
+        assert response.data["is_active"] is True
         Plan.objects.filter(user=valid_user).update(
-            expected_payment=timezone.localdate() - timedelta(days=1)
+            expected_payment=timezone.localdate() - timedelta(days=1),
         )
         check_expired_plans()
 
-        authenticated_client.post(self.url, {"payment_id": "123456"})
+        response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+
+        assert response.data["code"] == "payment_already_used"
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
 
         plan = Plan.objects.get(user=valid_user)
 
         assert plan.is_valid is False
+        assert plan.is_active is False
 
     @patch("plans.views.get_payment_mercadopago")
-    def test_when_the_payment_id_already_was_used(self, mock_mp, authenticated_client, valid_user):
-        mock_mp.return_value = {
-            "status": "approved",
-            "additional_info": {"items": [{"id": str(valid_user.id), "category_id": "mensal"}]},
-        }
+    def test_same_payment_twice_is_idempotent(self, mock_mp, authenticated_client, valid_user, payment_mock_valid):
+        mock_mp.return_value = payment_mock_valid
 
-        response_0 = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
-        response_1 = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+        authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+        plan_request0 = Plan.objects.get(user=valid_user)
 
-        assert response_0.data["expires_at"] == response_1.data["expires_at"]
+        authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+        plan_request1 = Plan.objects.get(user=valid_user)
+
+        assert plan_request0.expected_payment == plan_request1.expected_payment
+        assert plan_request1.is_active is True
+
+        payments = Payment.objects.count()
+        assert payments == 1
+
+    @patch("plans.views.get_payment_mercadopago")
+    def test_payment_is_rollback_when_plan_creations_fails(
+        self,
+        mock_mp,
+        authenticated_client,
+        valid_user,
+        payment_mock_valid,
+    ):
+        mock_mp.return_value = payment_mock_valid
+
+        with patch("plans.services.update_plan", side_effect=Exception("simulated fails")):
+            response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+
+        assert response.status_code == status.HTTP_500_INTERNAL_SERVER_ERROR
+        assert Payment.objects.count() == 0
+
+        response = authenticated_client.post(self.url, {"payment_id": "123456"}, format="json")
+
+        assert response.status_code == status.HTTP_200_OK
+        assert Payment.objects.count() == 1
 
     @patch("plans.views.get_payment_mercadopago")
     def test_creates_plan_when_user_has_no_plan(self, mock_mp, authenticated_client, valid_user):
