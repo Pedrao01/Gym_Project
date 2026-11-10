@@ -54,12 +54,13 @@ export default function Pagamentos() {
           setStatus(data);
         } else if (httpStatus === 202) {
           setMsg({ type: 'warning', text: '⏳ Pagamento pendente. Aguarde a confirmação.' });
-        }else if (httpStatus === 400) {
+        } else if (httpStatus === 400) {
           if (data?.code === 'payment_already_used') {
             setMsg({type: 'error', text: 'Este pagamento já foi registrado'})
           } else {
             setMsg({type: 'error', text: '❌ Pagamento não aprovado. Tente novamente.'})
           }
+        }
         if (data?.plan_name) setStatus(data);
     } else {
         setMsg({ type: 'error', text: '❌ Falha em efetuar o pagamento. Tente novamente.'})
