@@ -3,12 +3,13 @@ from datetime import date
 from dateutil.relativedelta import relativedelta
 from decouple import config
 from django.core.exceptions import ObjectDoesNotExist
-from django.db import transaction
+from django.db import IntegrityError, transaction
 from django.utils import timezone
 
+from core.exceptions import PaymentAlreadyUsed
 from users.models import User
 
-from .models import Plan
+from .models import Payment, Plan
 from .plans import PLANS
 from .utils import get_sdk
 
@@ -52,26 +53,25 @@ def get_payment_mercadopago(payment_id: int) -> dict:
     return request["response"]
 
 
-def update_plan(user: User, plan_kind: str, payment_id):
+def update_plan(user: User, plan_kind: str):
     with transaction.atomic():
         plan = Plan.objects.get(user=user)
-        if not plan.is_active:
-            plan.is_active = True
-            plan.is_valid = True
-            plan.payment_id = payment_id
-            plan.save(update_fields=["is_active", "is_valid", "payment_id"])
+        plan.is_active = True
+        plan.is_valid = True
+        plan.kind_plan = plan_kind
+        plan.save(update_fields=["is_active", "is_valid", "kind_plan"])
 
-            number_months = PLANS.get(plan_kind).get("number_months")
-            plan = update_next_payment(plan, number_months)
+        number_months = PLANS.get(plan_kind).get("number_months")
+        plan = update_next_payment(plan, number_months)
 
         return plan
 
 
-def create_plan(user: User, kind_plan: str, payment_id: str) -> Plan:
+def create_plan(user: User, kind_plan: str) -> Plan:
     number_months = PLANS.get(kind_plan).get("number_months")
 
     with transaction.atomic():
-        plan = Plan.objects.create(user=user, kind_plan=kind_plan, payment_id=payment_id)
+        plan = Plan.objects.create(user=user, kind_plan=kind_plan)
 
         new_plan = update_next_payment(plan, number_months)
 
@@ -116,3 +116,31 @@ def user_plan_is_active(user: User):
 
     except ObjectDoesNotExist:
         return False
+
+
+def create_payment(user: User, payment_id: str, payment_plan_name: str):
+    try:
+        with transaction.atomic():
+            payment_user = Payment.objects.create(
+                payment_id=payment_id,
+                payment_plan_name=payment_plan_name,
+                user=user,
+            )
+
+            return payment_user
+    except IntegrityError:
+        raise PaymentAlreadyUsed("This payment was already used")
+
+
+def confirm_payment(user: User, payment_id: str, plan_kind: str):
+    with transaction.atomic():
+        create_payment(user, payment_id, plan_kind)
+
+        if Plan.objects.filter(user=user).exists():
+            plan = update_plan(user, plan_kind)
+
+            return plan
+
+        plan = create_plan(user, plan_kind)
+
+        return plan

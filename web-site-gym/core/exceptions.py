@@ -1,0 +1,2 @@
+class PaymentAlreadyUsed(Exception):
+    pass

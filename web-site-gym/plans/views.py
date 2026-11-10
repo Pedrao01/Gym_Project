@@ -1,17 +1,16 @@
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView, Response, status
 
+from core.exceptions import PaymentAlreadyUsed
+
 from .models import Plan
 from .services import (
     cancel_plan,
-    create_plan,
+    confirm_payment,
     create_preference,
     get_payment_mercadopago,
-    update_plan,
     user_plan_is_active,
 )
-
-# Create your views here.
 
 
 #  Rota: /gym/plan-payment/
@@ -52,7 +51,8 @@ class PaymentConfirmView(APIView):
         plan_kind = payment["additional_info"]["items"][0]["category_id"]
 
         try:
-            plan = Plan.objects.get(payment_id=payment_id)
+            plan = confirm_payment(user, payment_id, plan_kind)
+
             return Response(
                 {
                     "plan_name": plan.kind_plan,
@@ -62,30 +62,20 @@ class PaymentConfirmView(APIView):
                 status=status.HTTP_200_OK,
             )
 
-        except ObjectDoesNotExist:
+        except PaymentAlreadyUsed:
 
             if Plan.objects.filter(user=user).exists():
-                plan = update_plan(user, plan_kind, payment_id)
-
+                plan = user.plan
                 return Response(
                     {
+                        "code": "payment_already_used",
                         "plan_name": plan.kind_plan,
                         "expires_at": plan.expected_payment,
                         "is_active": plan.is_active,
                     },
-                    status=status.HTTP_200_OK,
+                    status=status.HTTP_400_BAD_REQUEST,
                 )
-
-            plan = create_plan(user, plan_kind, payment_id)
-
-            return Response(
-                {
-                    "plan_name": plan.kind_plan,
-                    "expires_at": plan.expected_payment,
-                    "is_active": plan.is_active,
-                },
-                status=status.HTTP_200_OK,
-            )
+            return Response({"error": "This payment already was used"}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #  Route: /gym/payments/status/
