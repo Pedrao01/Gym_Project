@@ -21,8 +21,10 @@ services:
       - redis_data:/data
 
   gym-web:
-    image: web-site-gym:latest
+    image: ghcr.io/pedrao01/gym_project:af49c84c10783d4f778aa0bb8a479e8568c36132
     container_name: gym-web
+    environment:  # remove in production
+      - BACK_URL=${BACK_URL}
     expose:
       - "8000"
     depends_on:
@@ -36,7 +38,9 @@ services:
     env_file: .env
 
   migretion:
-    image: web-site-gym:latest
+    image: ghcr.io/pedrao01/gym_project:af49c84c10783d4f778aa0bb8a479e8568c36132
+    environment:  # remove in production
+      - BACK_URL=${BACK_URL}
     command: python manage.py migrate
     depends_on:
       db:
@@ -44,7 +48,9 @@ services:
     env_file: .env
 
   collectstatic:
-    image: web-site-gym:latest
+    image: ghcr.io/pedrao01/gym_project:af49c84c10783d4f778aa0bb8a479e8568c36132
+    environment:  # remove in production
+      - BACK_URL=${BACK_URL}
     command: python manage.py collectstatic --noinput
     volumes:
       - static_volume:/app/staticfiles
@@ -52,8 +58,10 @@ services:
     env_file: .env
 
   celery-beat:
-    image: web-site-gym:latest
+    image: ghcr.io/pedrao01/gym_project:af49c84c10783d4f778aa0bb8a479e8568c36132
     container_name: celery-beat-gym
+    environment:  # remove in production
+      - BACK_URL=${BACK_URL}
     command: celery -A config beat --loglevel=info
     depends_on:
       migretion:
@@ -65,8 +73,10 @@ services:
     env_file: .env
 
   celery-work:
-    image: web-site-gym:latest
+    image: ghcr.io/pedrao01/gym_project:af49c84c10783d4f778aa0bb8a479e8568c36132
     container_name: celery-work-gym
+    environment:  # remove in production
+      - BACK_URL=${BACK_URL}
     command: celery -A config worker --loglevel=info
     depends_on:
       migretion:
@@ -97,6 +107,7 @@ services:
 
   frontend-builder:
     build: ../gym-frontend
+#    image: ghcr.io/pedrao01/gym_project-frontend:af49c84c10783d4f778aa0bb8a479e8568c36132
     volumes:
       - frontend_dist:/app/dist
 
