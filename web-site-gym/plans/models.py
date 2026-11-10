@@ -9,7 +9,7 @@ from users.models import User
 class Plan(models.Model):
     class KindPlan(models.TextChoices):
         MONTHLY = "mensal", "Mensal"
-        QUARTERLY = "trimestal", "Trimestral"
+        QUARTERLY = "trimestral", "Trimestral"
         ANNUAL = "anual", "Anual"
 
     class Status(models.TextChoices):
@@ -22,9 +22,22 @@ class Plan(models.Model):
     is_active = models.BooleanField(default=True, verbose_name="Ativo")
     create_at = models.DateField(auto_now_add=True)
     expected_payment = models.DateField(blank=True, null=True, default=timezone.localdate)
-    payment_id = models.CharField(max_length=20, unique=True, null=True)
 
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="plan")
 
     def __str__(self):
         return f"Payment ID: {self.id} - Is valid: {self.is_valid} - Is active: {self.is_active}"
+
+
+class Payment(models.Model):
+
+    class KindPlan(models.TextChoices):
+        MONTHLY = "mensal", "Mensal"
+        QUARTERLY = "trimestal", "Trimestral"
+        ANNUAL = "anual", "Anual"
+
+    payment_id = models.CharField(max_length=20, unique=True, null=False)
+    payment_plan_name = models.CharField(max_length=15, choices=KindPlan.choices, null=False)
+    payment_date = models.DateField(auto_now_add=True)
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="payment")
