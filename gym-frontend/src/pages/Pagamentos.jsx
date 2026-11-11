@@ -61,7 +61,7 @@ export default function Pagamentos() {
             setMsg({type: 'error', text: '❌ Pagamento não aprovado. Tente novamente.'})
           }
         }
-        if (data?.plan_name) setStatus(data);
+        if (data?.plan_name && data?.is_active === true) setStatus(data);
     } else {
         setMsg({ type: 'error', text: '❌ Falha em efetuar o pagamento. Tente novamente.'})
     }
