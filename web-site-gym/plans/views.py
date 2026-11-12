@@ -75,10 +75,13 @@ class PaymentConfirmView(APIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            return Response({
-                "code": "payment_already_used",
-                "error": "This payment already was used",
-            }, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {
+                    "code": "payment_already_used",
+                    "error": "This payment already was used",
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 
 #  Route: /gym/payments/status/
