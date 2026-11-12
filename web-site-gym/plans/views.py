@@ -77,7 +77,7 @@ class PaymentConfirmView(APIView):
                 )
             return Response({
                 "code": "payment_already_used",
-                "error": "This payment already was used"
+                "error": "This payment already was used",
             }, status=status.HTTP_400_BAD_REQUEST)
 
 
